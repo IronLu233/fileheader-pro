@@ -1,0 +1,82 @@
+@startuml Architecture
+class Extension {
+    + activate()
+    + deactivate()
+    - _onCreateDocument()
+    - _onSaveDocument()
+    - _excuteCommand()
+}
+
+Extension --> FileheaderManager
+
+FileheaderManager --> FeatureProviderLoader
+
+FeatureProviderLoader o-- IFileheaderLanguageProvider
+
+class FileheaderManager {
+    - _providers: Array<IFileheaderLanguageProvider>
+    - _loadProviders(): Promise<void>
+    - _isSupportedLanguage(languageId: string): boolean
+    - _hasExistingFileheader(): boolean
+    + updateFileheader(document: TextDocument): Promise<void>
+}
+FileheaderManager -- FileheaderVariableBuilder
+FileheaderManager -- ExtensionConfigManager
+class FeatureProviderLoader {
+    + load(): Array<IFileheaderLanguageProvider>
+    - _loadCustomProviders(): Array<IFileheaderLanguageProvider>
+}
+
+abstract class IFileheaderLanguageProvider {
+    + languages: Array<string>
+    + {abstract} getTemplate(tpl: ITemplateFunction, variables: IFileheaderVariables): Tuple<Array<string>, Array<string>>
+    + getFileheader(variables: IFileheaderVariables): string
+}
+
+IFileheaderLanguageProvider --> FileheaderVariableBuilder
+IFileheaderLanguageProvider -> ITemplateFunction
+
+class TypescriptProvider implements IFileheaderLanguageProvider {
+}
+
+class PythonProvider implements IFileheaderLanguageProvider {
+}
+
+
+interface IFileheaderVariables {
+    + ctime: Date
+    + mtime: Date
+    + author: string
+    + authorEmail: string
+    + dateFormant?: string
+}
+
+interface ITemplateFunction {
+    + (strings: Array<string>, interpolations: Array<any>): Tuple<Array<string>, Array<string>>
+}
+
+class FileheaderVariableBuilder {
+    + {static} build(config: vscode.WorkspaceConfiguration): FileheaderVariables
+}
+
+class ExtensionConfigManager {
+    get(): vscode.WorkspaceConfiguration
+    set(): Promise<void>
+}
+
+IFileheaderLanguageProvider --> IFileheaderVariables
+
+class Utils {
+    {static} hasShebang(document: TextDocument): boolean
+    {static} getTaggedTemplateInputs(strings: Array<string>, ...inteplations: Array<any>): Tuple<Array<string>, Array<any>>
+}
+
+FileheaderVariableBuilder --> CanNotGetAuthorError
+FileheaderVariableBuilder --> CanNotGetEmailError
+FileheaderVariableBuilder --> ExtensionConfigManager
+
+class Error {}
+
+class GetAuthorError extends Error {}
+class GetEmailError extends Error {}
+@enduml
