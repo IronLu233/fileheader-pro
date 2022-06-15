@@ -14,5 +14,7 @@ export type IFileheaderVariables = {
   /**
    * @default 'YYYY-MM-DD HH:mm:ss'
    */
-  dateFormat?: string;
+  dateFormat: string;
+
+  companyName: string;
 };
