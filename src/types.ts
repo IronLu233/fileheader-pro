@@ -6,15 +6,13 @@ export type ITemplateFunction = (
 ) => [TemplateStringsArray, string[]];
 
 export type IFileheaderVariables = {
-  ctime: Dayjs;
-  mtime: Dayjs;
-  author: string;
+  ctime: string;
+  mtime: string;
+  authorName: string;
   authorEmail: string;
 
-  /**
-   * @default 'YYYY-MM-DD HH:mm:ss'
-   */
-  dateFormat: string;
+  userName: string;
+  userEmail: string;
 
-  companyName: string;
+  companyName?: string;
 };

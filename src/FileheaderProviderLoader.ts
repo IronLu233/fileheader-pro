@@ -1,18 +1,12 @@
 import {
-  TypescriptFileheaderProvider,
+  internalProviders,
   FileheaderLanguageProvider,
-} from "./Providers";
-
-const providers: FileheaderLanguageProvider[] = [
-  new TypescriptFileheaderProvider(),
-];
+} from "./FileheaderLanguageProviders";
 
 class FileheaderProviderLoader {
-  private _internalProviders: FileheaderLanguageProvider[] = providers;
-
   public async loadProviders(): Promise<FileheaderLanguageProvider[]> {
     const customProviders = await this._loadCustomProvers();
-    return [...this._internalProviders, ...customProviders];
+    return [...internalProviders, ...customProviders];
   }
 
   private async _loadCustomProvers(): Promise<FileheaderLanguageProvider[]> {

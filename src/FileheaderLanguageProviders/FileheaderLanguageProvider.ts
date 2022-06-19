@@ -1,3 +1,4 @@
+import vscode from "vscode";
 import { getTaggedTemplateInputs } from "../Utils";
 import { IFileheaderVariables, ITemplateFunction } from "../types";
 
@@ -23,13 +24,26 @@ export abstract class FileheaderLanguageProvider {
   }
 
   public getFileheader(variables: IFileheaderVariables): string {
-    const [strings, interpolations] = this.getTemplateInternal(variables);
+    const [_strings, interpolations] = this.getTemplateInternal(variables);
+    const strings = Array.from(_strings);
 
-    let fileheader = Array.from(strings).shift()!;
+    let fileheader = strings.shift()!;
     for (let index = 0; index < interpolations.length; index++) {
       fileheader += interpolations[index] + strings[index];
     }
 
     return fileheader;
+  }
+
+  public getOriginFileheaderRegExp(eol: vscode.EndOfLine): RegExp {
+    let pattern = this.getTemplateStrings()
+      .map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+      .join("(.*)");
+
+    if (eol === vscode.EndOfLine.CRLF) {
+      pattern = pattern.replace(/\n/g, "\r\n");
+    }
+
+    return new RegExp(pattern, "m");
   }
 }

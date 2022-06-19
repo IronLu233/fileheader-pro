@@ -2,42 +2,42 @@ import invariant from "invariant";
 
 export const CONFIG_SECTION_ALL = "neoFileheader" as const;
 export enum ExtensionConfigSectionKey {
-  getAuthorCommand = "getAuthorCommand",
-  getCurrentUserCommand = "getCurrentUserCommand",
+  userName = "userName",
+  userEmail = "userEmail",
   companyName = "companyName",
   dateFormat = "dateFormat",
   useOriginAuthor = "useOriginAuthor",
 }
 export enum ConfigSection {
-  getAuthorCommand = "neoFileheader.getAuthorCommand",
-  getCurrentUserCommand = "neoFileheader.getCurrentUserCommand",
+  userName = "neoFileheader.userName",
+  userEmail = "neoFileheader.userEmail",
   companyName = "neoFileheader.companyName",
   dateFormat = "neoFileheader.dateFormat",
   useOriginAuthor = "neoFileheader.useOriginAuthor",
 }
 
 invariant(
-  CONFIG_SECTION_ALL + ExtensionConfigSectionKey.getAuthorCommand ===
-    ConfigSection.getAuthorCommand,
-  "CONFIG_SECTION_ALL + ExtensionConfigSectionKey.getAuthorCommand === ConfigSection.getAuthorCommand"
+  ConfigSection.userName ===
+    `${CONFIG_SECTION_ALL}.${ExtensionConfigSectionKey.userName}`,
+  "ConfigSection.userName must be equal to ExtensionConfigSectionKey.userName"
 );
 invariant(
-  CONFIG_SECTION_ALL + ExtensionConfigSectionKey.getCurrentUserCommand ===
-    ConfigSection.getCurrentUserCommand,
-  "CONFIG_SECTION_ALL + ExtensionConfigSectionKey.getCurrentUserCommand === ConfigSection.getCurrentUserCommand"
+  ConfigSection.userEmail ===
+    `${CONFIG_SECTION_ALL}.${ExtensionConfigSectionKey.userEmail}`,
+  "ConfigSection.userEmail must be equal to ExtensionConfigSectionKey.userEmail"
 );
 invariant(
-  CONFIG_SECTION_ALL + ExtensionConfigSectionKey.companyName ===
-    ConfigSection.companyName,
-  "CONFIG_SECTION_ALL + ExtensionConfigSectionKey.companyName === ConfigSection.companyName"
+  ConfigSection.companyName ===
+    `${CONFIG_SECTION_ALL}.${ExtensionConfigSectionKey.companyName}`,
+  "ConfigSection.companyName must be equal to ExtensionConfigSectionKey.companyName"
 );
 invariant(
-  CONFIG_SECTION_ALL + ExtensionConfigSectionKey.dateFormat ===
-    ConfigSection.dateFormat,
-  "CONFIG_SECTION_ALL + ExtensionConfigSectionKey.dateFormat === ConfigSection.dateFormat"
+  ConfigSection.dateFormat ===
+    `${CONFIG_SECTION_ALL}.${ExtensionConfigSectionKey.dateFormat}`,
+  "ConfigSection.dateFormat must be equal to ExtensionConfigSectionKey.dateFormat"
 );
 invariant(
-  CONFIG_SECTION_ALL + ExtensionConfigSectionKey.useOriginAuthor ===
-    ConfigSection.useOriginAuthor,
-  "CONFIG_SECTION_ALL + ExtensionConfigSectionKey.useOriginAuthor === ConfigSection.useOriginAuthor"
+  ConfigSection.useOriginAuthor ===
+    `${CONFIG_SECTION_ALL}.${ExtensionConfigSectionKey.useOriginAuthor}`,
+  "ConfigSection.useOriginAuthor must be equal to ExtensionConfigSectionKey.useOriginAuthor"
 );

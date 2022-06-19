@@ -17,43 +17,43 @@
     "许可证"
   ],
   "activationEvents": [
-    "onCommand:neo-fileheader.helloWorld",
-    "workspaceContains:**/*"
+    "onCommand:neo-fileheader.*",
+    "workspaceContains:**/*",
+    "*"
   ],
+  "testWorkspacePath": "./node_modules/test-workspace",
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "neo-fileheader.fileheader",
-        "title": "Add fileheader"
+        "title": "Add Fileheader"
       },
       {
         "command": "neo-fileheader.fileheader-snippet-mode",
-        "title": "Add fileheader(Snippet mode)"
+        "title": "Add Fileheader(Snippet mode)"
       }
     ],
     "configuration": {
       "title": "Neo fileheader",
       "properties": {
-        "neoFileheader.getAuthorCommand": {
+        "neoFileheader.currentUserName": {
           "type": "string",
-          "default": "git log --pretty=format:%aN --reverse",
-          "description": "The command to get the author name, if you want a fixed author name, please set to `echo \"your name\"`"
+          "description": "The current user. The default is from your VCS"
         },
-        "neoFileheader.getCurrentUserCommand": {
+        "neoFileheader.currentUserEmail": {
           "type": "string",
-          "default": "git config user.name",
-          "description": "The command to get the current user name, if you want a fixed user name, please set to `echo \"your name\"`"
+          "description": "The current user email. the default is from your VCS"
         },
         "neoFileheader.companyName": {
-          "type": "string",
-          "default": "Your company name, please set it in VSCode configuration",
-          "description": "Your company name"
+          "type": ["string", "null"],
+          "default": "YourCompanyName",
+          "description": "Your company name, set it to null to hide it"
         },
         "neoFileheader.dateFormat": {
           "type": "string",
           "default": "YYYY-MM-DD HH:mm:ss",
-          "description": "The date format, see https://momentjs.com/docs/#/displaying/format/"
+          "description": "The date format, see https://momentjs.com/docs/#/displaying/format"
         }
       }
     }
@@ -62,6 +62,7 @@
     "vscode:prepublish": "yarn run package",
     "compile": "webpack",
     "watch": "webpack --watch",
+    "initTestWorkspace": "node scripts/initTestWorkspace.js",
     "package": "webpack --mode production --devtool hidden-source-map",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
@@ -82,6 +83,7 @@
     "eslint": "^8.16.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
+    "rimraf": "^3.0.2",
     "ts-loader": "^9.3.0",
     "typescript": "^4.7.2",
     "webpack": "^5.72.1",

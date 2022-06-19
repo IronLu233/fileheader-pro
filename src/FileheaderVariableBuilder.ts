@@ -1,28 +1,62 @@
 import vscode from "vscode";
-import { stat } from "fs/promises";
+import { dirname } from "path";
 import dayjs from "dayjs";
 import { IFileheaderVariables } from "./types";
-import { exec } from "./Utils";
+import { VCSProvider } from "./VCSProvider";
+import { stat } from "fs/promises";
+
+/**
+ *  get variable from VCS or fallback when it is not available
+ * @param operation get variable operation
+ * @param fallback fallback value
+ * @returns variable value or fallback value
+ */
+async function fallbackVariable<T>(
+  operation: () => Promise<T>,
+  fallback: T
+): Promise<T> {
+  try {
+    return await operation();
+  } catch {
+    return fallback;
+  }
+}
 
 export class FileheaderVariableBuilder {
   public async build(
     config: vscode.WorkspaceConfiguration,
     filePath: string
   ): Promise<IFileheaderVariables> {
-    const stats = await stat(filePath);
-    const getAuthorCommand = config.get("getAuthorCommand") as string;
-    const getCurrentUserCommand = config.get("getCurrentUserCommand") as string;
-    const companyName = config.get("companyName");
+    const currentTime = dayjs();
+    const fileStat = await stat(filePath);
 
-    const [author, userName] = await Promise.all([
-      exec(getAuthorCommand),
-      exec(getCurrentUserCommand),
-    ]);
+    const userName = await VCSProvider.getUserName(dirname(filePath));
+    const userEmail = await VCSProvider.getUserEmail(dirname(filePath));
+
+    const authorName = await fallbackVariable(
+      () => VCSProvider.getAuthorName(filePath),
+      userName
+    );
+    const authorEmail = await fallbackVariable(
+      () => VCSProvider.getAuthorEmail(filePath),
+      userEmail
+    );
+    const ctime = await fallbackVariable(
+      () => VCSProvider.getCtime(filePath),
+      dayjs(fileStat.ctime)
+    );
+
+    const companyName = config.get<string>("companyName");
+    const dateFormat = config.get("dateFormat", "YYYY-MM-DD HH:mm:ss");
 
     return {
-      ctime: dayjs(stats.ctime),
-      mtime: dayjs(),
-      author: author,
+      ctime: ctime.format(dateFormat),
+      mtime: currentTime.format(dateFormat),
+      authorName,
+      authorEmail,
+      userName,
+      userEmail,
+      companyName,
     };
   }
 }

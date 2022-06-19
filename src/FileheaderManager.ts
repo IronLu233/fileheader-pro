@@ -1,8 +1,8 @@
 import vscode from "vscode";
-import { memoize, last, head } from "lodash-es";
+import { memoize, last, head, replace } from "lodash-es";
 import { fileheaderProviderLoader } from "./FileheaderProviderLoader";
-import { FileheaderLanguageProvider } from "./Providers";
-import { hasShebang } from "./Utils";
+import { FileheaderLanguageProvider } from "./FileheaderLanguageProviders";
+import { hasShebang, offsetSelection } from "./Utils";
 import { extensionConfigManager } from "./ExtensionConfigManager";
 import { FileheaderVariableBuilder } from "./FileheaderVariableBuilder";
 
@@ -23,14 +23,24 @@ class FileheaderManager {
     );
   }
 
-  private getOriginFileheaderPositions(
+  private getOriginFileheaderOffsetRange(
     document: vscode.TextDocument,
     provider: FileheaderLanguageProvider
   ) {
-    const strings = provider.getTemplateStrings();
     const source = document.getText();
-    const positions = strings.map((str) => source.indexOf(str));
-    return positions;
+    const pattern = provider.getOriginFileheaderRegExp(document.eol);
+    const range = {
+      start: -1,
+      end: -1,
+    };
+    const result = source.match(pattern);
+    if (result) {
+      const match = result[0];
+      range.start = result.index!;
+
+      range.end = range.start + match.length;
+    }
+    return range;
   }
 
   public async updateFileheader(document: vscode.TextDocument) {
@@ -45,7 +55,7 @@ class FileheaderManager {
     let startLine =
       provider.startLineOffset + (hasShebang(document.getText()) ? 1 : 0);
 
-    const originPosition = this.getOriginFileheaderPositions(
+    const originFileheaderOffsetRange = this.getOriginFileheaderOffsetRange(
       document,
       provider
     );
@@ -57,9 +67,15 @@ class FileheaderManager {
 
     const editor = await vscode.window.showTextDocument(document);
     const fileheader = provider.getFileheader(fileheaderVariable);
-    if (originPosition.length > 0) {
-      const originStart = document.positionAt(head(originPosition)!);
-      const originEnd = document.positionAt(last(originPosition)!);
+
+    const originSelection = editor.selection;
+    if (originFileheaderOffsetRange.start !== -1) {
+      const originStart = document.positionAt(
+        originFileheaderOffsetRange.start
+      );
+      const originEnd = document.positionAt(
+        originFileheaderOffsetRange.end + 1
+      );
       await editor.edit((editBuilder) => {
         editBuilder.replace(
           new vscode.Range(originStart, originEnd),
@@ -67,10 +83,20 @@ class FileheaderManager {
         );
       });
     } else {
+      const onlyHasSingleLine = document.lineCount === 1;
+      const isLeadingLineEmpty = document.lineAt(startLine).isEmptyOrWhitespace;
+      const shouldInsertLineBreak = !isLeadingLineEmpty || onlyHasSingleLine;
+      const value = shouldInsertLineBreak ? fileheader + "\n" : fileheader;
       await editor.edit((editBuilder) => {
-        editBuilder.insert(new vscode.Position(startLine, 0), fileheader);
+        editBuilder.insert(new vscode.Position(startLine, 0), value);
       });
     }
+
+    // move to origin position
+    editor.selection = offsetSelection(
+      originSelection,
+      fileheader.split("\n").length
+    );
   }
 }
 
