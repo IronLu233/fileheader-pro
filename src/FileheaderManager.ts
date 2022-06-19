@@ -1,10 +1,13 @@
 import vscode from "vscode";
-import { memoize, last, head, replace } from "lodash-es";
+import { memoize } from "lodash-es";
 import { fileheaderProviderLoader } from "./FileheaderProviderLoader";
 import { FileheaderLanguageProvider } from "./FileheaderLanguageProviders";
 import { hasShebang, offsetSelection } from "./Utils";
 import { extensionConfigManager } from "./ExtensionConfigManager";
 import { FileheaderVariableBuilder } from "./FileheaderVariableBuilder";
+import { IFileheaderVariables } from "./types";
+import { MissUserNameEmailError } from "./Error/MissUserNameEmailError";
+import { NoVCSProviderError } from "./Error/NoVCSProviderError";
 
 class FileheaderManager {
   constructor() {
@@ -60,10 +63,24 @@ class FileheaderManager {
       provider
     );
     const config = extensionConfigManager.get();
-    const fileheaderVariable = await new FileheaderVariableBuilder().build(
-      config,
-      filePath
-    );
+
+    let fileheaderVariable: IFileheaderVariables;
+
+    try {
+      fileheaderVariable = await new FileheaderVariableBuilder().build(
+        config,
+        filePath
+      );
+    } catch (error) {
+      if (error instanceof MissUserNameEmailError) {
+        vscode.window.showErrorMessage(error.message);
+      }
+
+      if (error instanceof NoVCSProviderError) {
+        vscode.window.showErrorMessage(error.message);
+      }
+      return;
+    }
 
     const editor = await vscode.window.showTextDocument(document);
     const fileheader = provider.getFileheader(fileheaderVariable);

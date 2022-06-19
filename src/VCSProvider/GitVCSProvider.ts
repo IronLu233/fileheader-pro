@@ -1,4 +1,6 @@
 import dayjs, { Dayjs } from "dayjs";
+import { CommandExecError } from "../Error/CommandExecError";
+import { MissUserNameEmailError } from "../Error/MissUserNameEmailError";
 import { NoVCSProviderError } from "../Error/NoVCSProviderError";
 import { exec, getFirstLine } from "../Utils";
 import { BaseVCSProvider } from "./BaseVCSProvider";
@@ -8,7 +10,7 @@ export class GitVCSProvider implements BaseVCSProvider {
     try {
       await exec("git status", { cwd: repoPath });
     } catch (error) {
-      throw new NoVCSProviderError((error as Error).message);
+      throw new NoVCSProviderError("Please init git via `git init` first.");
     }
   }
   async getAuthorName(filePath: string): Promise<string> {
@@ -34,23 +36,29 @@ export class GitVCSProvider implements BaseVCSProvider {
   async getUserName(repoPath: string): Promise<string> {
     try {
       const userName = await exec(`git config user.name`, { cwd: repoPath });
-      if (!userName) {
-        throw new Error("You should set user.name in git config first");
-      }
       return getFirstLine(userName);
     } catch (e) {
+      if (e instanceof CommandExecError) {
+        throw new MissUserNameEmailError(
+          `You should set user.name in git config first.
+Set your username via 'git config user.name "your username"'`
+        );
+      }
       throw e;
     }
   }
   async getUserEmail(repoPath: string): Promise<string> {
     try {
       const userEmail = await exec(`git config user.email`, { cwd: repoPath });
-      if (!userEmail) {
-        throw new Error("You should set user.email in git config first");
-      }
       return getFirstLine(userEmail);
-    } catch (error) {
-      throw error;
+    } catch (e) {
+      if (e instanceof CommandExecError) {
+        throw new MissUserNameEmailError(
+          `You should set user.email in git config first.
+Set your username via 'git config user.email "your Email"'`
+        );
+      }
+      throw e;
     }
   }
   async getCtime(filePath: string): Promise<Dayjs> {

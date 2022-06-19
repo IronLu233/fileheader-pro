@@ -4,21 +4,25 @@ import dayjs from "dayjs";
 import { IFileheaderVariables } from "./types";
 import { VCSProvider } from "./VCSProvider";
 import { stat } from "fs/promises";
+import { ExtensionConfigSectionKey } from "./constants";
 
 /**
  *  get variable from VCS or fallback when it is not available
  * @param operation get variable operation
- * @param fallback fallback value
+ * @param fallback fallback value, if it is falsy, it will throw the origin error
  * @returns variable value or fallback value
  */
 async function fallbackVariable<T>(
   operation: () => Promise<T>,
-  fallback: T
+  fallback?: T
 ): Promise<T> {
   try {
     return await operation();
-  } catch {
-    return fallback;
+  } catch (e) {
+    if (fallback) {
+      return fallback;
+    }
+    throw e;
   }
 }
 
@@ -30,8 +34,27 @@ export class FileheaderVariableBuilder {
     const currentTime = dayjs();
     const fileStat = await stat(filePath);
 
-    const userName = await VCSProvider.getUserName(dirname(filePath));
-    const userEmail = await VCSProvider.getUserEmail(dirname(filePath));
+    const fixedUserName = config.get<string | null>(
+      ExtensionConfigSectionKey.userName,
+      null
+    );
+    const fixedUserEmail = config.get<string | null>(
+      ExtensionConfigSectionKey.userEmail,
+      null
+    );
+
+    if (!fixedUserEmail || !fixedUserName) {
+      await VCSProvider.validate(dirname(filePath));
+    }
+
+    const userName = await fallbackVariable(
+      () => VCSProvider.getUserName(dirname(filePath)),
+      fixedUserName!
+    );
+    const userEmail = await fallbackVariable(
+      () => VCSProvider.getUserEmail(dirname(filePath)),
+      fixedUserEmail!
+    );
 
     const authorName = await fallbackVariable(
       () => VCSProvider.getAuthorName(filePath),

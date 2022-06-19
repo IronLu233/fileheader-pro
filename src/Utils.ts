@@ -1,5 +1,6 @@
 import vscode from "vscode";
-import { exec as _exec, ExecOptions } from "child_process";
+import { ChildProcess, exec as _exec, ExecOptions } from "child_process";
+import { CommandExecError } from "./Error/CommandExecError";
 export function hasShebang(text: string): boolean {
   return text.startsWith("#!");
 }
@@ -14,18 +15,20 @@ export function getTaggedTemplateInputs(
 export function exec(
   command: string,
   options: ExecOptions = {}
-): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    _exec(command, options, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-      } else if (stderr) {
-        reject(stderr);
+): Promise<string> & { handler: ChildProcess | null } {
+  let handler: ChildProcess | null = null;
+  const p = new Promise<string>((resolve, reject) => {
+    handler = _exec(command, options, (error, stdout, stderr) => {
+      if (stderr || error) {
+        reject(new CommandExecError(stderr, stdout, error));
       } else {
         resolve(stdout);
       }
     });
-  });
+  }) as Promise<string> & { handler: ChildProcess | null };
+
+  p.handler = handler;
+  return p;
 }
 
 export function getFirstLine(input: string) {

@@ -46,7 +46,10 @@
           "description": "The current user email. the default is from your VCS"
         },
         "neoFileheader.companyName": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "default": "YourCompanyName",
           "description": "Your company name, set it to null to hide it"
         },
@@ -80,6 +83,7 @@
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
     "@vscode/test-electron": "^2.1.3",
+    "cross-env": "^7.0.3",
     "eslint": "^8.16.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
