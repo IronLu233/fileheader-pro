@@ -1,6 +1,6 @@
-# neo-fileheader README
+# fileheader-pro README
 
-This is the README for your extension "neo-fileheader". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "fileheader-pro". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

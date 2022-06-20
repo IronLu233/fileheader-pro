@@ -1,6 +1,6 @@
 {
-  "name": "neo-fileheader",
-  "displayName": "neo-fileheader",
+  "name": "fileheader-pro",
+  "displayName": "fileheader-pro",
   "description": "Conveniently and fully customizable fileheader extension",
   "version": "0.0.1",
   "engines": {
@@ -17,7 +17,7 @@
     "许可证"
   ],
   "activationEvents": [
-    "onCommand:neo-fileheader.*",
+    "onCommand:fileheader-pro.*",
     "workspaceContains:**/*",
     "*"
   ],
@@ -26,26 +26,26 @@
   "contributes": {
     "commands": [
       {
-        "command": "neo-fileheader.fileheader",
-        "title": "Add Fileheader"
+        "command": "fileheader-pro.fileheader",
+        "title": "Fileheader Pro: Add Fileheader"
       },
       {
-        "command": "neo-fileheader.fileheader-snippet-mode",
-        "title": "Add Fileheader(Snippet mode)"
+        "command": "fileheader-pro.fileheader-snippet-mode",
+        "title": "Fileheader Pro: Add Fileheader(Snippet mode)"
       }
     ],
     "configuration": {
       "title": "Neo fileheader",
       "properties": {
-        "neoFileheader.currentUserName": {
+        "FileheaderPro.currentUserName": {
           "type": "string",
           "description": "The current user. The default is from your VCS"
         },
-        "neoFileheader.currentUserEmail": {
+        "FileheaderPro.currentUserEmail": {
           "type": "string",
           "description": "The current user email. the default is from your VCS"
         },
-        "neoFileheader.companyName": {
+        "FileheaderPro.companyName": {
           "type": [
             "string",
             "null"
@@ -53,7 +53,7 @@
           "default": "YourCompanyName",
           "description": "Your company name, set it to null to hide it"
         },
-        "neoFileheader.dateFormat": {
+        "FileheaderPro.dateFormat": {
           "type": "string",
           "default": "YYYY-MM-DD HH:mm:ss",
           "description": "The date format, see https://momentjs.com/docs/#/displaying/format"
@@ -95,6 +95,7 @@
   },
   "dependencies": {
     "dayjs": "^1.11.3",
+    "delay": "^5.0.0",
     "invariant": "^2.2.4",
     "lodash-es": "^4.17.21"
   }

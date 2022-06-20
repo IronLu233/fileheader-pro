@@ -9,6 +9,11 @@ import { IFileheaderVariables } from "./types";
 import { MissUserNameEmailError } from "./Error/MissUserNameEmailError";
 import { NoVCSProviderError } from "./Error/NoVCSProviderError";
 
+type UpdateFileheaderManagerOptions = {
+  silentWhenUnsupported?: boolean;
+  allowInsert?: boolean;
+};
+
 class FileheaderManager {
   constructor() {
     this._findProvider = memoize(this._findProvider);
@@ -46,12 +51,19 @@ class FileheaderManager {
     return range;
   }
 
-  public async updateFileheader(document: vscode.TextDocument) {
+  public async updateFileheader(
+    document: vscode.TextDocument,
+    {
+      allowInsert = true,
+      silentWhenUnsupported = false,
+    }: UpdateFileheaderManagerOptions = {}
+  ) {
     const provider = this._findProvider(document.languageId);
 
     const filePath = document.fileName;
     if (!provider) {
-      vscode.window.showErrorMessage("This language is not supported.");
+      !silentWhenUnsupported &&
+        vscode.window.showErrorMessage("This language is not supported.");
       return;
     }
 
@@ -99,7 +111,7 @@ class FileheaderManager {
           fileheader
         );
       });
-    } else {
+    } else if (allowInsert) {
       const onlyHasSingleLine = document.lineCount === 1;
       const isLeadingLineEmpty = document.lineAt(startLine).isEmptyOrWhitespace;
       const shouldInsertLineBreak = !isLeadingLineEmpty || onlyHasSingleLine;
@@ -107,6 +119,8 @@ class FileheaderManager {
       await editor.edit((editBuilder) => {
         editBuilder.insert(new vscode.Position(startLine, 0), value);
       });
+    } else {
+      return;
     }
 
     // move to origin position

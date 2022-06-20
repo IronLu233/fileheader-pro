@@ -8,7 +8,7 @@ class Extension {
     await fileheaderManager.loadProviders();
     this._disposers.push(
       vscode.commands.registerCommand(
-        "neo-fileheader.fileheader",
+        "fileheader-pro.fileheader",
         this._executeCommand,
         this
       )
@@ -38,12 +38,32 @@ class Extension {
     fileheaderManager.updateFileheader(currentDocument);
   }
 
-  private _onCreateDocument() {
-    //
+  private async _onCreateDocument(e: vscode.FileCreateEvent) {
+    // wait vscode open new text document
+    await new Promise<void>((resolve) => {
+      const disposer = vscode.workspace.onDidOpenTextDocument(() => {
+        disposer.dispose();
+        resolve();
+      });
+    });
+
+    const documentUriMap = new Map(
+      vscode.workspace.textDocuments.map((d) => [d.uri.fsPath, d])
+    );
+    for (let file of e.files) {
+      const document = documentUriMap.get(file.fsPath);
+
+      document &&
+        (await fileheaderManager.updateFileheader(document, {
+          silentWhenUnsupported: true,
+        }));
+    }
   }
 
-  private _onSaveDocument() {
-    //
+  private _onSaveDocument(e: vscode.TextDocumentWillSaveEvent) {
+    // disable insert new fileheader because it will cause some issues
+    // we only support update origin fileheader
+    fileheaderManager.updateFileheader(e.document, { allowInsert: false });
   }
 }
 

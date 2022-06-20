@@ -1,6 +1,6 @@
 import invariant from "invariant";
 
-export const CONFIG_SECTION_ALL = "neoFileheader" as const;
+export const CONFIG_SECTION_ALL = "FileheaderPro" as const;
 export enum ExtensionConfigSectionKey {
   userName = "userName",
   userEmail = "userEmail",
@@ -9,11 +9,11 @@ export enum ExtensionConfigSectionKey {
   useOriginAuthor = "useOriginAuthor",
 }
 export enum ConfigSection {
-  userName = "neoFileheader.userName",
-  userEmail = "neoFileheader.userEmail",
-  companyName = "neoFileheader.companyName",
-  dateFormat = "neoFileheader.dateFormat",
-  useOriginAuthor = "neoFileheader.useOriginAuthor",
+  userName = "FileheaderPro.userName",
+  userEmail = "FileheaderPro.userEmail",
+  companyName = "FileheaderPro.companyName",
+  dateFormat = "FileheaderPro.dateFormat",
+  useOriginAuthor = "FileheaderPro.useOriginAuthor",
 }
 
 invariant(
