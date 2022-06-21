@@ -49,3 +49,25 @@ export function offsetSelection(
   );
   return new vscode.Selection(newAnchor, newActive);
 }
+
+export function delayUntil(
+  condition: () => boolean,
+  intervalTimeout: number,
+  rejectTimeout: number
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const timeoutTimer = setTimeout(() => {
+      reject();
+      clearInterval(intervalTimer);
+      clearTimeout(timeoutTimer);
+    }, rejectTimeout);
+
+    const intervalTimer = setInterval(() => {
+      if (condition()) {
+        clearInterval(intervalTimer);
+        clearTimeout(timeoutTimer);
+        resolve();
+      }
+    }, intervalTimeout);
+  });
+}

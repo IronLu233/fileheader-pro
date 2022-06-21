@@ -39,24 +39,11 @@ class Extension {
   }
 
   private async _onCreateDocument(e: vscode.FileCreateEvent) {
-    // wait vscode open new text document
-    await new Promise<void>((resolve) => {
-      const disposer = vscode.workspace.onDidOpenTextDocument(() => {
-        disposer.dispose();
-        resolve();
-      });
-    });
-
-    const documentUriMap = new Map(
-      vscode.workspace.textDocuments.map((d) => [d.uri.fsPath, d])
-    );
     for (let file of e.files) {
-      const document = documentUriMap.get(file.fsPath);
-
-      document &&
-        (await fileheaderManager.updateFileheader(document, {
-          silentWhenUnsupported: true,
-        }));
+      const document = await vscode.workspace.openTextDocument(file);
+      await fileheaderManager.updateFileheader(document, {
+        silentWhenUnsupported: true,
+      });
     }
   }
 
