@@ -1,4 +1,5 @@
 import dayjs, { Dayjs } from "dayjs";
+import { dirname } from "path";
 import { CommandExecError } from "../Error/CommandExecError";
 import { MissUserNameEmailError } from "../Error/MissUserNameEmailError";
 import { NoVCSProviderError } from "../Error/NoVCSProviderError";
@@ -16,9 +17,11 @@ export class GitVCSProvider implements BaseVCSProvider {
   async getAuthorName(filePath: string): Promise<string> {
     try {
       const authors = await exec(
-        `git --no-pager log --format='%aN' --follow --reverse ${filePath}`
+        `git --no-pager log --format='%aN' --follow --reverse ${filePath}`,
+        { cwd: dirname(filePath) }
       );
-      return getFirstLine(authors);
+      // TODO: find out why std out have extra `'`
+      return getFirstLine(authors).replace(/'/g, "");
     } catch (error) {
       throw error;
     }
@@ -26,9 +29,10 @@ export class GitVCSProvider implements BaseVCSProvider {
   async getAuthorEmail(filePath: string): Promise<string> {
     try {
       const emails = await exec(
-        `git --no-pager log --format='%aE' --follow --reverse ${filePath}`
+        `git --no-pager log --format='%aE' --follow --reverse ${filePath}`,
+        { cwd: dirname(filePath) }
       );
-      return getFirstLine(emails);
+      return getFirstLine(emails).replace(/'/g, "");
     } catch (error) {
       throw error;
     }
@@ -61,15 +65,40 @@ Set your username via 'git config user.email "your Email"'`
       throw e;
     }
   }
-  async getCtime(filePath: string): Promise<Dayjs> {
+  async getBirthtime(filePath: string): Promise<Dayjs> {
     try {
-      const authors = await exec(
-        `git --no-pager log --format='%at' --follow --reverse ${filePath}`
+      const isoTimes = await exec(
+        `git --no-pager log --format='%ai' --follow --reverse ${filePath}`,
+        { cwd: dirname(filePath) }
       );
-      const cTimestamp = Number.parseInt(getFirstLine(authors));
-      return dayjs(cTimestamp);
+
+      const ctimeISO = getFirstLine(isoTimes).replace(/'/g, "");
+
+      return dayjs(ctimeISO);
     } catch (error) {
       throw error;
+    }
+  }
+
+  async isTracked(filePath: string): Promise<boolean> {
+    try {
+      const result = await exec(`git ls-files ${filePath}`, {
+        cwd: dirname(filePath),
+      });
+      return !!result;
+    } catch {
+      return false;
+    }
+  }
+
+  async hasChanged(filePath: string): Promise<boolean> {
+    try {
+      const result = await exec(`git status --porcelain ${filePath}`, {
+        cwd: dirname(filePath),
+      });
+      return !!result && !result.replace(/'/g, '').startsWith("M");
+    } catch {
+      return false;
     }
   }
 }

@@ -10,7 +10,7 @@
       "type": "extensionHost",
       "request": "launch",
       "args": [
-        "${workspaceFolder}/node_modules/test-workspace",
+        "${workspaceFolder}/submodules/vscode-extension-samples",
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--disable-extensions"
       ],

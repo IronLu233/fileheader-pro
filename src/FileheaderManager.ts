@@ -51,6 +51,16 @@ class FileheaderManager {
     return range;
   }
 
+  private shouldSkipReplace() {
+    // first, when we open a file, we should record the origin file hash
+    // after close, the hash should be cleaned
+    // if there is a change in VCS provider, we should replace the fileheader
+    // if the file in vscode editor not dirty, we should skip the replace
+    // if not, compare the file hash and if they are the same, we should skip
+    // implement TBD
+    return false;
+  }
+
   public async updateFileheader(
     document: vscode.TextDocument,
     {
@@ -97,14 +107,11 @@ class FileheaderManager {
     const editor = await vscode.window.showTextDocument(document);
     const fileheader = provider.getFileheader(fileheaderVariable);
 
-    const originSelection = editor.selection;
     if (originFileheaderOffsetRange.start !== -1) {
       const originStart = document.positionAt(
         originFileheaderOffsetRange.start
       );
-      const originEnd = document.positionAt(
-        originFileheaderOffsetRange.end + 1
-      );
+      const originEnd = document.positionAt(originFileheaderOffsetRange.end);
       await editor.edit((editBuilder) => {
         editBuilder.replace(
           new vscode.Range(originStart, originEnd),
@@ -122,12 +129,6 @@ class FileheaderManager {
     } else {
       return;
     }
-
-    // move to origin position
-    editor.selection = offsetSelection(
-      originSelection,
-      fileheader.split("\n").length
-    );
   }
 }
 

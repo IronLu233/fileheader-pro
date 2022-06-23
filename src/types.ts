@@ -6,8 +6,14 @@ export type ITemplateFunction = (
 ) => [TemplateStringsArray, string[]];
 
 export type IFileheaderVariables = {
-  ctime: string;
-  mtime: string;
+  birthTime: string;
+
+  /**
+   * this field logic is not wonderful
+   * may have some bugs
+   * @experimental
+   */
+  mtime?: string;
   authorName: string;
   authorEmail: string;
 

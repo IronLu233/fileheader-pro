@@ -50,7 +50,10 @@ class Extension {
   private _onSaveDocument(e: vscode.TextDocumentWillSaveEvent) {
     // disable insert new fileheader because it will cause some issues
     // we only support update origin fileheader
-    fileheaderManager.updateFileheader(e.document, { allowInsert: false });
+    const updatePromise = fileheaderManager.updateFileheader(e.document, {
+      allowInsert: false,
+    });
+    e.waitUntil(updatePromise);
   }
 }
 

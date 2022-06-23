@@ -26,8 +26,15 @@ export interface BaseVCSProvider {
   getUserEmail(repoPath: string): Promise<string>;
 
   /**
-   * get file creation time from the VCS
+   * get file birth time from the VCS
    * @param filePath the file path
    */
-  getCtime(filePath: string): Promise<Dayjs>;
+  getBirthtime(filePath: string): Promise<Dayjs>;
+
+  /**
+   * get the result whether the file is tracked by VCS
+   */
+  isTracked(filePath: string): Promise<boolean>;
+
+  hasChanged(filePath: string): Promise<boolean>;
 }

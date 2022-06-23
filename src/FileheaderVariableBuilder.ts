@@ -31,9 +31,6 @@ export class FileheaderVariableBuilder {
     config: vscode.WorkspaceConfiguration,
     filePath: string
   ): Promise<IFileheaderVariables> {
-    const currentTime = dayjs();
-    const fileStat = await stat(filePath);
-
     const fixedUserName = config.get<string | null>(
       ExtensionConfigSectionKey.userName,
       null
@@ -43,9 +40,16 @@ export class FileheaderVariableBuilder {
       null
     );
 
+    const disableMtime = config.get<boolean>(ExtensionConfigSectionKey.disableModifiedTime, true);
+
     if (!fixedUserEmail || !fixedUserName) {
       await VCSProvider.validate(dirname(filePath));
     }
+
+    const currentTime = dayjs();
+    const fileStat = await stat(filePath);
+
+    const isTracked = await VCSProvider.isTracked(filePath);
 
     const userName = await fallbackVariable(
       () => VCSProvider.getUserName(dirname(filePath)),
@@ -56,25 +60,38 @@ export class FileheaderVariableBuilder {
       fixedUserEmail!
     );
 
-    const authorName = await fallbackVariable(
-      () => VCSProvider.getAuthorName(filePath),
-      userName
-    );
-    const authorEmail = await fallbackVariable(
-      () => VCSProvider.getAuthorEmail(filePath),
-      userEmail
-    );
-    const ctime = await fallbackVariable(
-      () => VCSProvider.getCtime(filePath),
-      dayjs(fileStat.ctime)
-    );
+    const authorName = isTracked
+      ? await fallbackVariable(
+          () => VCSProvider.getAuthorName(filePath),
+          userName
+        )
+      : userName;
+
+    const authorEmail = isTracked
+      ? await fallbackVariable(
+          () => VCSProvider.getAuthorEmail(filePath),
+          userEmail
+        )
+      : userEmail;
+
+    const birthtime = isTracked
+      ? await fallbackVariable(
+          () => VCSProvider.getBirthtime(filePath),
+          dayjs(fileStat.birthtime)
+        )
+      : dayjs(fileStat.birthtime);
 
     const companyName = config.get<string>("companyName");
     const dateFormat = config.get("dateFormat", "YYYY-MM-DD HH:mm:ss");
 
+
+    const mtime = currentTime;
+
     return {
-      ctime: ctime.format(dateFormat),
-      mtime: currentTime.format(dateFormat),
+      birthTime: birthtime.format(dateFormat),
+
+      // mtime may take some bugs
+      mtime: disableMtime ? undefined : mtime.format(dateFormat),
       authorName,
       authorEmail,
       userName,

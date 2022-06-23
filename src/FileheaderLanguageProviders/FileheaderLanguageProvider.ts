@@ -46,4 +46,13 @@ export abstract class FileheaderLanguageProvider {
 
     return new RegExp(pattern, "m");
   }
+
+  public getSourcefileWithoutFileheader(document: vscode.TextDocument): string {
+    const regexp = new RegExp(
+      this.getOriginFileheaderRegExp(document.eol),
+      "mg"
+    );
+    const source = document.getText();
+    return source.replace(regexp, "");
+  }
 }
