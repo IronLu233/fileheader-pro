@@ -79,7 +79,6 @@ class FileheaderManager {
   ) {
     const provider = this._findProvider(document.languageId);
 
-    const filePath = document.fileName;
     if (!provider) {
       !silentWhenUnsupported &&
         vscode.window.showErrorMessage("This language is not supported.");
@@ -96,11 +95,12 @@ class FileheaderManager {
     const config = extensionConfigManager.get();
 
     let fileheaderVariable: IFileheaderVariables;
+    const currentWorkspace = vscode.workspace.getWorkspaceFolder(document.uri);
 
     try {
       fileheaderVariable = await new FileheaderVariableBuilder().build(
         config,
-        filePath
+        document.uri
       );
     } catch (error) {
       if (error instanceof MissUserNameEmailError) {

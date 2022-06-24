@@ -18,15 +18,68 @@ export type ITemplateFunction = (
   ...interpolations: TemplateInterpolation[]
 ) => Template;
 
+/**
+ * Fileheader variables
+ *
+ * These fields can be disabled by VSCode config
+ * some fields are inspired by https://www.jetbrains.com/help/idea/file-template-variables.html
+ */
 export type IFileheaderVariables = {
-  birthTime: string;
+  /**
+   * file birth time
+   * will get it from VCS or fallback to filesystem when it is not available
+   */
+  birthTime?: string;
 
-  mtime: string;
-  authorName: string;
-  authorEmail: string;
+  /**
+   * file modified time
+   * will get it from VCS or fallback to filesystem when it is not available
+   */
+  mtime?: string;
 
-  userName: string;
-  userEmail: string;
+  /**
+   * if the file is tracked by VCS, it will get the author name from VCS
+   * else it will get it from current user name
+   */
+  authorName?: string;
 
-  companyName: string;
+  /**
+   * if the file is tracked by VCS, it will get the author email from VCS
+   * else it will get it from current user email
+   */
+  authorEmail?: string;
+
+  /**
+   * user name is from VSCode config, and fallback to VCS config
+   */
+  userName?: string;
+
+  /**
+   * user email is from VSCode config, and fallback to VCS config
+   */
+  userEmail?: string;
+
+  companyName?: string;
+
+  /**
+   * name of current project
+   */
+  projectName?: string;
+
+  /**
+   * the file path, relative to project root
+   * POSIX path separator
+   */
+  filePath?: string;
+
+  /**
+   * the directory path, relative to project root
+   * POSIX path separator
+   */
+  dirPath?: string;
+
+  /**
+   * filename with extension
+   */
+  fileName?: string;
 };

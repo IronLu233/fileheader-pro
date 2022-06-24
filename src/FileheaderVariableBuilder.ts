@@ -1,10 +1,11 @@
 import vscode from "vscode";
-import { dirname } from "path";
+import { basename, dirname } from "path";
+import { relative } from "path/posix";
 import dayjs from "dayjs";
 import { IFileheaderVariables } from "./types";
 import { VCSProvider } from "./VCSProvider";
 import { stat } from "fs/promises";
-import { ExtensionConfigSectionKey } from "./constants";
+import { ConfigSection, ExtensionConfigSectionKey } from "./constants";
 
 /**
  *  get variable from VCS or fallback when it is not available
@@ -29,8 +30,12 @@ async function fallbackVariable<T>(
 export class FileheaderVariableBuilder {
   public async build(
     config: vscode.WorkspaceConfiguration,
-    filePath: string
+    fileUri: vscode.Uri
   ): Promise<IFileheaderVariables> {
+    const workspace = vscode.workspace.getWorkspaceFolder(fileUri);
+    workspace?.uri.path;
+    const fsPath = fileUri.fsPath;
+
     const fixedUserName = config.get<string | null>(
       ExtensionConfigSectionKey.userName,
       null
@@ -41,58 +46,75 @@ export class FileheaderVariableBuilder {
     );
 
     if (!fixedUserEmail || !fixedUserName) {
-      await VCSProvider.validate(dirname(filePath));
+      await VCSProvider.validate(dirname(fsPath));
     }
 
     const currentTime = dayjs();
-    const fileStat = await stat(filePath);
+    const fileStat = await stat(fsPath);
 
-    const isTracked = await VCSProvider.isTracked(filePath);
+    const isTracked = await VCSProvider.isTracked(fsPath);
 
     const userName = await fallbackVariable(
-      () => VCSProvider.getUserName(dirname(filePath)),
+      () => VCSProvider.getUserName(dirname(fsPath)),
       fixedUserName!
     );
     const userEmail = await fallbackVariable(
-      () => VCSProvider.getUserEmail(dirname(filePath)),
+      () => VCSProvider.getUserEmail(dirname(fsPath)),
       fixedUserEmail!
     );
 
     const authorName = isTracked
       ? await fallbackVariable(
-          () => VCSProvider.getAuthorName(filePath),
+          () => VCSProvider.getAuthorName(fsPath),
           userName
         )
       : userName;
 
     const authorEmail = isTracked
       ? await fallbackVariable(
-          () => VCSProvider.getAuthorEmail(filePath),
+          () => VCSProvider.getAuthorEmail(fsPath),
           userEmail
         )
       : userEmail;
 
     const birthtime = isTracked
       ? await fallbackVariable(
-          () => VCSProvider.getBirthtime(filePath),
+          () => VCSProvider.getBirthtime(fsPath),
           dayjs(fileStat.birthtime)
         )
       : dayjs(fileStat.birthtime);
 
-    const companyName = config.get<string>("companyName")!;
-    const dateFormat = config.get("dateFormat", "YYYY-MM-DD HH:mm:ss");
+    const companyName = config.get<string>(ConfigSection.companyName)!;
+    const dateFormat = config.get(
+      ConfigSection.dateFormat,
+      "YYYY-MM-DD HH:mm:ss"
+    );
 
     const mtime = currentTime;
 
+    let projectName: string | undefined = undefined;
+    let filePath: string | undefined = undefined;
+    let dirPath: string | undefined = undefined;
+    let fileName = basename(fileUri.path);
+    if (workspace) {
+      projectName = basename(workspace.uri.path);
+      filePath = relative(workspace.uri.path, fileUri.path);
+      dirPath = relative(workspace.uri.path, dirname(fileUri.path));
+    }
+
     return {
       birthTime: birthtime.format(dateFormat),
-
       mtime: mtime.format(dateFormat),
       authorName,
       authorEmail,
       userName,
       userEmail,
       companyName,
+
+      projectName,
+      filePath,
+      dirPath,
+      fileName,
     };
   }
 }

@@ -31,15 +31,15 @@
       }
     ],
     "configuration": {
-      "title": "Neo fileheader",
+      "title": "Fileheader Pro",
       "properties": {
         "FileheaderPro.currentUserName": {
           "type": "string",
-          "description": "The current user. The default is from your VCS"
+          "description": "The fixed current user. The default is from your VCS"
         },
         "FileheaderPro.currentUserEmail": {
           "type": "string",
-          "description": "The current user email. the default is from your VCS"
+          "description": "The fixed current user email. the default is from your VCS"
         },
         "FileheaderPro.companyName": {
           "type": [
@@ -53,6 +53,61 @@
           "type": "string",
           "default": "YYYY-MM-DD HH:mm:ss",
           "description": "The date format, see https://momentjs.com/docs/#/displaying/format"
+        },
+        "FileheaderPro.disableField.birthtime": {
+          "type": "boolean",
+          "default": false,
+          "description": "force make the birthtime field be empty, the default template will hide related fields"
+        },
+        "FileheaderPro.disableField.mtime": {
+          "type": "boolean",
+          "default": false,
+          "description": "force make the mtime field be empty, the default template will hide related fields"
+        },
+        "FileheaderPro.disableField.authorName": {
+          "type": "boolean",
+          "default": false,
+          "description": "force make the author name field be empty, the default template will hide related fields"
+        },
+        "FileheaderPro.disableField.authorEmail": {
+          "type": "boolean",
+          "default": false,
+          "description": "force make the author email field be empty, the default template will hide related fields"
+        },
+        "FileheaderPro.disableField.userName": {
+          "type": "boolean",
+          "default": false,
+          "description": "force make the user name field be empty, the default template will hide related fields"
+        },
+        "FileheaderPro.disableField.userEmail": {
+          "type": "boolean",
+          "default": false,
+          "description": "force make the user email field be empty, the default template will hide related fields"
+        },
+        "FileheaderPro.disableField.companyName": {
+          "type": "boolean",
+          "default": false,
+          "description": "force make the company name field be empty, the default template will hide related fields"
+        },
+        "FileheaderPro.disableField.projectName": {
+          "type": "boolean",
+          "default": false,
+          "description": "force make the project name field be empty, the default template will hide related fields"
+        },
+        "FileheaderPro.disableField.filePath": {
+          "type": "boolean",
+          "default": false,
+          "description": "force make the file path field be empty, the default template will hide related fields"
+        },
+        "FileheaderPro.disableField.dirPath": {
+          "type": "boolean",
+          "default": false,
+          "description": "force make the dir path field be empty, the default template will hide related fields"
+        },
+        "FileheaderPro.disableField.fileName": {
+          "type": "boolean",
+          "default": false,
+          "description": "force make the file name field be empty, the default template will hide related fields"
         }
       }
     }

@@ -3,6 +3,10 @@ import { ChildProcess, exec as _exec, ExecOptions } from "child_process";
 import { CommandExecError } from "./Error/CommandExecError";
 import { Template, TemplateInterpolation } from "./types";
 import { TEMPLATE_SYMBOL_KEY } from "./constants";
+
+/**
+ * whether text starts with `'#!'`
+ */
 export function hasShebang(text: string): boolean {
   return text.startsWith("#!");
 }
@@ -18,6 +22,9 @@ export function getTaggedTemplateInputs(
   };
 }
 
+/**
+ * Promisify node exec function
+ */
 export function exec(
   command: string,
   options: ExecOptions = {}
@@ -78,6 +85,10 @@ export function delayUntil(
   });
 }
 
+/**
+ * recursive evaluate the given template and interpolations
+ * falsy value will be empty string
+ */
 export function evaluateTemplate(
   strings: ReadonlyArray<string>,
   interpolations: TemplateInterpolation[]
