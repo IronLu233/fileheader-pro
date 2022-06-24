@@ -96,7 +96,7 @@ Set your username via 'git config user.email "your Email"'`
       const result = await exec(`git status --porcelain ${filePath}`, {
         cwd: dirname(filePath),
       });
-      return !!result && !result.replace(/'/g, '').startsWith("M");
+      return !!result && !result.replace(/'/g, "").startsWith("M");
     } catch {
       return false;
     }

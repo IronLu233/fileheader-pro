@@ -23,7 +23,9 @@ class Extension {
     );
 
     this.disposers.push(
-      vscode.window.onDidChangeVisibleTextEditors(this.onDidChangeVisibleTextEditors)
+      vscode.window.onDidChangeVisibleTextEditors(
+        this.onDidChangeVisibleTextEditors
+      )
     );
   };
 
@@ -61,7 +63,7 @@ class Extension {
   }
 
   private onDidChangeVisibleTextEditors(e: readonly vscode.TextEditor[]) {
-    fileheaderManager.recordOriginFileHash(e.map(it => it.document));
+    fileheaderManager.recordOriginFileHash(e.map((it) => it.document));
   }
 }
 

@@ -19,12 +19,9 @@ export class TypescriptFileheaderProvider extends FileheaderLanguageProvider {
   ): [TemplateStringsArray, any[]] {
     return tpl`/*
 * @author        ${variables.authorName} <${variables.authorEmail}>
-* @date          ${variables.birthTime}${variables.mtime ? `\n* @lastModified  ${variables.mtime}` : ""}
-${
-  variables.companyName
-    ? `* Copyright © ${variables.companyName} All rights reserved`
-    : ""
-}
+* @date          ${variables.birthTime}
+* @lastModified  ${variables.mtime}
+* Copyright © ${variables.companyName} All rights reserved
 */`;
   }
 }

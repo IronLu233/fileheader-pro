@@ -13,7 +13,7 @@ export enum ConfigSection {
   userEmail = "FileheaderPro.userEmail",
   companyName = "FileheaderPro.companyName",
   dateFormat = "FileheaderPro.dateFormat",
-  disableModifiedTime = 'FileheaderPro.disableModifiedTime',
+  disableModifiedTime = "FileheaderPro.disableModifiedTime",
 }
 
 invariant(

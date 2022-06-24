@@ -55,7 +55,9 @@ class FileheaderManager {
 
   private async shouldSkipReplace(document: vscode.TextDocument) {
     // if the file in vscode editor not dirty, we should skip the replace
-    if (!document.isDirty) { return true; }
+    if (!document.isDirty) {
+      return true;
+    }
 
     // if there is a change in VCS provider, we should replace the fileheader
     const isTracked = await VCSProvider.isTracked(document.fileName);
@@ -114,9 +116,15 @@ class FileheaderManager {
     const editor = await vscode.window.showTextDocument(document);
     const fileheader = provider.getFileheader(fileheaderVariable);
 
-    const shouldSkipReplace = await this.shouldSkipReplace(document);
+    const shouldSkipReplace =
+      originFileheaderOffsetRange.start !== -1 &&
+      (await this.shouldSkipReplace(document));
 
-    if (!shouldSkipReplace && originFileheaderOffsetRange.start !== -1) {
+    if (shouldSkipReplace) {
+      return;
+    }
+
+    if (originFileheaderOffsetRange.start !== -1) {
       const originStart = document.positionAt(
         originFileheaderOffsetRange.start
       );
@@ -141,9 +149,9 @@ class FileheaderManager {
   }
 
   public recordOriginFileHash(documents: readonly vscode.TextDocument[]) {
-      for(let document of documents) {
+    for (let document of documents) {
       fileHashMemento.set(document);
-      }
+    }
   }
 }
 

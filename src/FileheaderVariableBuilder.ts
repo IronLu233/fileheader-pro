@@ -40,7 +40,10 @@ export class FileheaderVariableBuilder {
       null
     );
 
-    const disableMtime = config.get<boolean>(ExtensionConfigSectionKey.disableModifiedTime, true);
+    const disableMtime = config.get<boolean>(
+      ExtensionConfigSectionKey.disableModifiedTime,
+      false
+    );
 
     if (!fixedUserEmail || !fixedUserName) {
       await VCSProvider.validate(dirname(filePath));
@@ -83,7 +86,6 @@ export class FileheaderVariableBuilder {
 
     const companyName = config.get<string>("companyName");
     const dateFormat = config.get("dateFormat", "YYYY-MM-DD HH:mm:ss");
-
 
     const mtime = currentTime;
 
