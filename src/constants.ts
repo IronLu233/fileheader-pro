@@ -7,7 +7,6 @@ export enum ExtensionConfigSectionKey {
   companyName = "companyName",
   dateFormat = "dateFormat",
   disableModifiedTime = "disableModifiedTime",
-  // useOriginAuthor = "useOriginAuthor",
 }
 export enum ConfigSection {
   userName = "FileheaderPro.userName",
@@ -15,7 +14,6 @@ export enum ConfigSection {
   companyName = "FileheaderPro.companyName",
   dateFormat = "FileheaderPro.dateFormat",
   disableModifiedTime = 'FileheaderPro.disableModifiedTime',
-  // useOriginAuthor = "FileheaderPro.useOriginAuthor",
 }
 
 invariant(
@@ -38,8 +36,3 @@ invariant(
     `${CONFIG_SECTION_ALL}.${ExtensionConfigSectionKey.dateFormat}`,
   "ConfigSection.dateFormat must be equal to ExtensionConfigSectionKey.dateFormat"
 );
-// invariant(
-//   ConfigSection.useOriginAuthor ===
-//     `${CONFIG_SECTION_ALL}.${ExtensionConfigSectionKey.useOriginAuthor}`,
-//   "ConfigSection.useOriginAuthor must be equal to ExtensionConfigSectionKey.useOriginAuthor"
-// );
