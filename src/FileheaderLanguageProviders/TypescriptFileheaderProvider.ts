@@ -16,7 +16,7 @@ export class TypescriptFileheaderProvider extends FileheaderLanguageProvider {
   override getTemplate(
     tpl: ITemplateFunction,
     variables: IFileheaderVariables
-  ): [TemplateStringsArray, any[]] {
+  ) {
     return tpl`/*
 * @author        ${variables.authorName} <${variables.authorEmail}>
 * @date          ${variables.birthTime}

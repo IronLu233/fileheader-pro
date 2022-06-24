@@ -1,6 +1,11 @@
 import vscode from "vscode";
-import { getTaggedTemplateInputs } from "../Utils";
-import { IFileheaderVariables, ITemplateFunction } from "../types";
+import { evaluateTemplate, getTaggedTemplateInputs } from "../Utils";
+import { IFileheaderVariables, ITemplateFunction, Template } from "../types";
+import {
+  TEMPLATE_SYMBOL_KEY,
+  TEMPLATE_WILDCARD_PLACEHOLDER,
+  WILDCARD_ACCESS_VARIABLES,
+} from "../constants";
 
 export abstract class FileheaderLanguageProvider {
   abstract languages: string[];
@@ -13,36 +18,33 @@ export abstract class FileheaderLanguageProvider {
   protected abstract getTemplate(
     tpl: ITemplateFunction,
     variables: IFileheaderVariables
-  ): [TemplateStringsArray, any[]];
+  ): Template;
 
   private getTemplateInternal(variables: IFileheaderVariables) {
     return this.getTemplate(getTaggedTemplateInputs, variables);
   }
 
-  public getTemplateStrings(): string[] {
-    return Array.from(this.getTemplateInternal({} as IFileheaderVariables)[0]);
-  }
-
   public getFileheader(variables: IFileheaderVariables): string {
-    const [_strings, interpolations] = this.getTemplateInternal(variables);
+    const { strings: _strings, interpolations } =
+      this.getTemplateInternal(variables);
     const strings = Array.from(_strings);
 
-    let fileheader = strings.shift()!;
-    for (let index = 0; index < interpolations.length; index++) {
-      fileheader += interpolations[index] + strings[index];
-    }
-
-    return fileheader;
+    return evaluateTemplate(strings, interpolations);
   }
 
   public getOriginFileheaderRegExp(eol: vscode.EndOfLine): RegExp {
-    let pattern = this.getTemplateStrings()
-      .map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-      .join("(.*)");
+    const template = this.getTemplateInternal(
+      WILDCARD_ACCESS_VARIABLES as IFileheaderVariables
+    );
 
-    if (eol === vscode.EndOfLine.CRLF) {
-      pattern = pattern.replace(/\n/g, "\r\n");
-    }
+    const templateValue = evaluateTemplate(
+      template.strings,
+      template.interpolations
+    );
+    const pattern = templateValue
+      .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+      .replace(new RegExp(TEMPLATE_WILDCARD_PLACEHOLDER, "g"), ".*")
+      .replace(/\n/g, eol === vscode.EndOfLine.CRLF ? "\r\n" : "\n");
 
     return new RegExp(pattern, "m");
   }

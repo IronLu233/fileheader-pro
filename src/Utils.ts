@@ -1,15 +1,21 @@
 import vscode from "vscode";
 import { ChildProcess, exec as _exec, ExecOptions } from "child_process";
 import { CommandExecError } from "./Error/CommandExecError";
+import { Template, TemplateInterpolation } from "./types";
+import { TEMPLATE_SYMBOL_KEY } from "./constants";
 export function hasShebang(text: string): boolean {
   return text.startsWith("#!");
 }
 
 export function getTaggedTemplateInputs(
   strings: TemplateStringsArray,
-  ...interpolations: any[]
-): [TemplateStringsArray, any[]] {
-  return [strings, interpolations];
+  ...interpolations: TemplateInterpolation[]
+): Template {
+  return {
+    [TEMPLATE_SYMBOL_KEY]: true,
+    strings,
+    interpolations,
+  };
 }
 
 export function exec(
@@ -70,4 +76,31 @@ export function delayUntil(
       }
     }, intervalTimeout);
   });
+}
+
+export function evaluateTemplate(
+  strings: ReadonlyArray<string>,
+  interpolations: TemplateInterpolation[]
+) {
+  const [first, ...restStrings] = strings;
+  let result = first;
+
+  for (let index = 0; index < interpolations.length; index++) {
+    const interpolation = interpolations[index];
+    if (
+      interpolation &&
+      typeof interpolation === "object" &&
+      interpolation[TEMPLATE_SYMBOL_KEY]
+    ) {
+      result += evaluateTemplate(
+        interpolation.strings,
+        interpolation.interpolations
+      );
+      result += restStrings[index];
+    } else {
+      result += (interpolation ?? "") + restStrings[index];
+    }
+  }
+
+  return result;
 }

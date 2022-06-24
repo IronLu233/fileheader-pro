@@ -1,4 +1,5 @@
 import invariant from "invariant";
+import { IFileheaderVariables } from "./types";
 
 export const CONFIG_SECTION_ALL = "FileheaderPro" as const;
 export enum ExtensionConfigSectionKey {
@@ -15,6 +16,20 @@ export enum ConfigSection {
   dateFormat = "FileheaderPro.dateFormat",
   disableModifiedTime = "FileheaderPro.disableModifiedTime",
 }
+
+export const TEMPLATE_SYMBOL_KEY = Symbol.for("template");
+
+export const TEMPLATE_WILDCARD_PLACEHOLDER = "可莉世界第一可爱";
+
+export const WILDCARD_ACCESS_VARIABLES: Readonly<IFileheaderVariables> = {
+  birthTime: TEMPLATE_WILDCARD_PLACEHOLDER,
+  mtime: TEMPLATE_WILDCARD_PLACEHOLDER,
+  authorName: TEMPLATE_WILDCARD_PLACEHOLDER,
+  authorEmail: TEMPLATE_WILDCARD_PLACEHOLDER,
+  userName: TEMPLATE_WILDCARD_PLACEHOLDER,
+  userEmail: TEMPLATE_WILDCARD_PLACEHOLDER,
+  companyName: TEMPLATE_WILDCARD_PLACEHOLDER,
+};
 
 invariant(
   ConfigSection.userName ===
