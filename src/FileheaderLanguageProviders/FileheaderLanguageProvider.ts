@@ -2,6 +2,7 @@ import vscode from "vscode";
 import { evaluateTemplate, getTaggedTemplateInputs } from "../Utils";
 import { IFileheaderVariables, ITemplateFunction, Template } from "../types";
 import {
+  CUSTOM_TEMPLATE_FILE_NAME,
   TEMPLATE_WILDCARD_PLACEHOLDER,
   WILDCARD_ACCESS_VARIABLES,
 } from "../constants";
@@ -10,7 +11,7 @@ import customTemplateContent from "./provider.template";
 import path from "path";
 
 export abstract class FileheaderLanguageProvider {
-  public static createCustomTemplate() {
+  public static async createCustomTemplate() {
     const workspaces = vscode.workspace.workspaceFolders;
     if (!workspaces) {
       vscode.window.showErrorMessage(
@@ -24,24 +25,31 @@ export abstract class FileheaderLanguageProvider {
     if (activeDocumentUri) {
       targetWorkspace = vscode.workspace.getWorkspaceFolder(activeDocumentUri);
     } else {
-      vscode.window.showQuickPick(
-        workspaces.map((workspace) => workspace.name),
+      const picked = await vscode.window.showQuickPick(
+        workspaces.map((workspace) => ({ label: workspace.name, workspace })),
         { title: "Select which workspace for add custom fileheader template" }
       );
+
+      targetWorkspace = picked?.workspace;
     }
 
     if (!targetWorkspace) {
       return;
     }
 
-    return writeFile(
-      path.join(
-        targetWorkspace.uri.fsPath,
-        ".vscode",
-        "fileheader.template.js"
-      ),
-      customTemplateContent
+    const templatePath = path.join(
+      targetWorkspace.uri.fsPath,
+      ".vscode",
+      CUSTOM_TEMPLATE_FILE_NAME
     );
+
+    await writeFile(templatePath, customTemplateContent);
+
+    const document = await vscode.workspace.openTextDocument(
+      path.resolve(templatePath)
+    );
+
+    vscode.window.showTextDocument(document);
   }
 
   abstract languages: string[];
@@ -52,7 +60,7 @@ export abstract class FileheaderLanguageProvider {
    * internal field
    * only have when it is a custom FileheaderProvider
    */
-  workspaceUri: vscode.Uri | undefined;
+  workspaceScopeUri: vscode.Uri | undefined;
 
   abstract blockCommentStart: string;
   abstract blockCommentEnd: string;

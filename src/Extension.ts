@@ -20,7 +20,7 @@ class Extension {
 
     this.disposers.push(
       vscode.commands.registerCommand(
-        "fileheader-pro.createCustomTemplate",
+        "fileheader-pro.generateCustomTemplate",
         this.createCustomTemplate,
         this
       )

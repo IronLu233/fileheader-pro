@@ -7,6 +7,7 @@ import {
   FileheaderLanguageProvider,
 } from "./FileheaderLanguageProviders";
 import { getStringHash } from "./Utils";
+import { CUSTOM_TEMPLATE_FILE_NAME } from "./constants";
 
 class FileheaderProviderLoader {
   public async loadProviders(): Promise<FileheaderLanguageProvider[]> {
@@ -21,7 +22,7 @@ class FileheaderProviderLoader {
         const path = resolve(
           folder.uri.fsPath,
           ".vscode",
-          "fileheader.template.js"
+          CUSTOM_TEMPLATE_FILE_NAME
         );
 
         const content = await fs.readFile(path, "utf8");
@@ -36,7 +37,7 @@ class FileheaderProviderLoader {
           if (!(instance instanceof FileheaderLanguageProvider)) {
             return;
           }
-          instance.workspaceUri = folder.uri;
+          instance.workspaceScopeUri = folder.uri;
           providers.push(instance);
         });
       } catch (e) {

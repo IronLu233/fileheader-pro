@@ -28,3 +28,5 @@ export const WILDCARD_ACCESS_VARIABLES: Readonly<
   dirPath: TEMPLATE_WILDCARD_PLACEHOLDER,
   fileName: TEMPLATE_WILDCARD_PLACEHOLDER,
 };
+
+export const CUSTOM_TEMPLATE_FILE_NAME = "fileheader.template.js";

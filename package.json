@@ -17,8 +17,6 @@
     "许可证"
   ],
   "activationEvents": [
-    "onCommand:fileheader-pro.*",
-    "workspaceContains:**/*",
     "*"
   ],
   "testWorkspacePath": "./node_modules/test-workspace",
@@ -30,8 +28,8 @@
         "title": "Fileheader Pro: Add Fileheader"
       },
       {
-        "command": "fileheader-pro.createCustomTemplate",
-        "title": "Fileheader Pro: Create Custom Template"
+        "command": "fileheader-pro.generateCustomTemplate",
+        "title": "Fileheader Pro: Generate Custom Fileheader Template"
       }
     ],
     "configuration": {

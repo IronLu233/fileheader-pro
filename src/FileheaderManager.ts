@@ -25,8 +25,9 @@ class FileheaderManager {
     const languageId = document.languageId;
     return this._providers.find((provider) => {
       if (
+        provider.workspaceScopeUri &&
         vscode.workspace.getWorkspaceFolder(document.uri)?.uri.path !==
-        provider.workspaceUri?.path
+          provider.workspaceScopeUri?.path
       ) {
         return false;
       }
@@ -81,7 +82,7 @@ class FileheaderManager {
     const provider = this._findProvider(document);
 
     if (!provider) {
-      !silentWhenUnsupported &&
+      (!silentWhenUnsupported || !allowInsert) &&
         vscode.window.showErrorMessage("This language is not supported.");
       return;
     }
