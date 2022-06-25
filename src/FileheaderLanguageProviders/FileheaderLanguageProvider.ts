@@ -2,15 +2,57 @@ import vscode from "vscode";
 import { evaluateTemplate, getTaggedTemplateInputs } from "../Utils";
 import { IFileheaderVariables, ITemplateFunction, Template } from "../types";
 import {
-  TEMPLATE_SYMBOL_KEY,
   TEMPLATE_WILDCARD_PLACEHOLDER,
   WILDCARD_ACCESS_VARIABLES,
 } from "../constants";
+import { writeFile } from "fs/promises";
+import customTemplateContent from "./provider.template";
+import path from "path";
 
 export abstract class FileheaderLanguageProvider {
+  public static createCustomTemplate() {
+    const workspaces = vscode.workspace.workspaceFolders;
+    if (!workspaces) {
+      vscode.window.showErrorMessage(
+        "Your workspace is not contain any folder"
+      );
+      return;
+    }
+
+    const activeDocumentUri = vscode.window.activeTextEditor?.document.uri;
+    let targetWorkspace: vscode.WorkspaceFolder | undefined = undefined;
+    if (activeDocumentUri) {
+      targetWorkspace = vscode.workspace.getWorkspaceFolder(activeDocumentUri);
+    } else {
+      vscode.window.showQuickPick(
+        workspaces.map((workspace) => workspace.name),
+        { title: "Select which workspace for add custom fileheader template" }
+      );
+    }
+
+    if (!targetWorkspace) {
+      return;
+    }
+
+    return writeFile(
+      path.join(
+        targetWorkspace.uri.fsPath,
+        ".vscode",
+        "fileheader.template.js"
+      ),
+      customTemplateContent
+    );
+  }
+
   abstract languages: string[];
 
   startLineOffset = 0;
+
+  /**
+   * internal field
+   * only have when it is a custom FileheaderProvider
+   */
+  workspaceUri: vscode.Uri | undefined;
 
   abstract blockCommentStart: string;
   abstract blockCommentEnd: string;

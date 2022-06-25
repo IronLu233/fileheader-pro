@@ -3,7 +3,7 @@ import { ChildProcess, exec as _exec, ExecOptions } from "child_process";
 import { CommandExecError } from "./Error/CommandExecError";
 import { Template, TemplateInterpolation } from "./types";
 import { TEMPLATE_SYMBOL_KEY } from "./constants";
-
+import crypto from "crypto";
 /**
  * whether text starts with `'#!'`
  */
@@ -114,4 +114,12 @@ export function evaluateTemplate(
   }
 
   return result;
+}
+
+/**
+ * get string hash of the given string
+ * @param input the input string
+ */
+export function getStringHash(input: string) {
+  return crypto.createHash("sha1").update(input).digest("base64");
 }

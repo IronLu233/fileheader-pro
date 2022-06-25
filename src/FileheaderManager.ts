@@ -1,5 +1,4 @@
 import vscode from "vscode";
-import { memoize } from "lodash-es";
 import { fileheaderProviderLoader } from "./FileheaderProviderLoader";
 import { FileheaderLanguageProvider } from "./FileheaderLanguageProviders";
 import { hasShebang } from "./Utils";
@@ -16,20 +15,23 @@ type UpdateFileheaderManagerOptions = {
 };
 
 class FileheaderManager {
-  constructor() {
-    this._findProvider = memoize(this._findProvider);
-  }
-
   private _providers: FileheaderLanguageProvider[] = [];
 
   public async loadProviders() {
     this._providers = await fileheaderProviderLoader.loadProviders();
   }
 
-  private _findProvider(languageId: string) {
-    return this._providers.find((provider) =>
-      provider.languages.some((l) => l === languageId)
-    );
+  private _findProvider(document: vscode.TextDocument) {
+    const languageId = document.languageId;
+    return this._providers.find((provider) => {
+      if (
+        vscode.workspace.getWorkspaceFolder(document.uri)?.uri.path !==
+        provider.workspaceUri?.path
+      ) {
+        return false;
+      }
+      return provider.languages.some((l) => l === languageId);
+    });
   }
 
   private getOriginFileheaderOffsetRange(
@@ -76,7 +78,7 @@ class FileheaderManager {
       silentWhenUnsupported = false,
     }: UpdateFileheaderManagerOptions = {}
   ) {
-    const provider = this._findProvider(document.languageId);
+    const provider = this._findProvider(document);
 
     if (!provider) {
       !silentWhenUnsupported &&

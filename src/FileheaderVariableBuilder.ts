@@ -103,7 +103,7 @@ export class FileheaderVariableBuilder {
     }
 
     return {
-      birthTime: birthtime.format(dateFormat),
+      birthtime: birthtime.format(dateFormat),
       mtime: mtime.format(dateFormat),
       authorName,
       authorEmail,

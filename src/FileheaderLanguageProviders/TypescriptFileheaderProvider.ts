@@ -12,14 +12,13 @@ export class TypescriptFileheaderProvider extends FileheaderLanguageProvider {
   blockCommentStart: string = "/*";
   blockCommentEnd: string = "*/";
 
-  // TODO: support nested template tags
   override getTemplate(
     tpl: ITemplateFunction,
     variables: IFileheaderVariables
   ) {
     return tpl`/*
 * @author        ${variables.authorName} <${variables.authorEmail}>
-* @date          ${variables.birthTime}
+* @date          ${variables.birthtime}
 * @lastModified  ${variables.mtime}
 * Copyright © ${variables.companyName} All rights reserved
 */`;

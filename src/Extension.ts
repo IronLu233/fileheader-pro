@@ -1,18 +1,36 @@
 import * as vscode from "vscode";
 import { ConfigSection } from "./constants";
 import { extensionConfigManager } from "./ExtensionConfigManager";
+import { FileheaderLanguageProvider } from "./FileheaderLanguageProviders";
 import { fileheaderManager } from "./FileheaderManager";
 
 class Extension {
   private disposers: vscode.Disposable[] = [];
+  private customTemplateFileheaderWatcher: vscode.FileSystemWatcher | undefined;
 
   activate = async (context: vscode.ExtensionContext) => {
     await fileheaderManager.loadProviders();
     this.disposers.push(
       vscode.commands.registerCommand(
         "fileheader-pro.fileheader",
-        this.executeCommand,
+        this.addFileheader,
         this
+      )
+    );
+
+    this.disposers.push(
+      vscode.commands.registerCommand(
+        "fileheader-pro.createCustomTemplate",
+        this.createCustomTemplate,
+        this
+      )
+    );
+
+    this.createCustomTemplateFileListener();
+
+    this.disposers.push(
+      vscode.workspace.onDidChangeWorkspaceFolders(
+        this.createCustomTemplateFileListener
       )
     );
 
@@ -37,13 +55,17 @@ class Extension {
     }
   };
 
-  private async executeCommand(...args: any[]) {
+  private async addFileheader(...args: any[]) {
     const currentDocument = vscode.window.activeTextEditor?.document;
     if (!currentDocument) {
       await vscode.window.showErrorMessage("You should open a file first.");
       return;
     }
     fileheaderManager.updateFileheader(currentDocument);
+  }
+
+  createCustomTemplate() {
+    return FileheaderLanguageProvider.createCustomTemplate();
   }
 
   private async onCreateDocument(e: vscode.FileCreateEvent) {
@@ -79,6 +101,22 @@ class Extension {
 
   private onDidChangeVisibleTextEditors(e: readonly vscode.TextEditor[]) {
     fileheaderManager.recordOriginFileHash(e.map((it) => it.document));
+  }
+
+  private async createCustomTemplateFileListener() {
+    this.customTemplateFileheaderWatcher?.dispose();
+    this.customTemplateFileheaderWatcher =
+      vscode.workspace.createFileSystemWatcher(
+        "**/.vscode/fileheader.template.js"
+      );
+
+    const reloadProviders = () => {
+      fileheaderManager.loadProviders();
+    };
+
+    this.customTemplateFileheaderWatcher.onDidCreate(reloadProviders),
+      this.customTemplateFileheaderWatcher.onDidChange(reloadProviders),
+      this.customTemplateFileheaderWatcher.onDidDelete(reloadProviders);
   }
 }
 

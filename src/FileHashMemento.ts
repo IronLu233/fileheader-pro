@@ -1,12 +1,12 @@
 import vscode from "vscode";
-import crypto from "crypto";
 import { difference } from "lodash-es";
+import { getStringHash } from "./Utils";
 
 class FileHashMemento {
   records: Map<string, string> = new Map();
 
   private calculate(source: string) {
-    return crypto.createHash("sha1").update(source).digest("base64");
+    return getStringHash(source);
   }
 
   set(document: vscode.TextDocument) {

@@ -1,17 +1,50 @@
+import { resolve } from "path";
+import fs from "fs/promises";
+import vscode from "vscode";
+import evalModule from "eval";
 import {
   internalProviders,
   FileheaderLanguageProvider,
 } from "./FileheaderLanguageProviders";
+import { getStringHash } from "./Utils";
 
 class FileheaderProviderLoader {
   public async loadProviders(): Promise<FileheaderLanguageProvider[]> {
-    const customProviders = await this._loadCustomProvers();
-    return [...internalProviders, ...customProviders];
+    const customProviders = await this.loadCustomProvers();
+    return [...customProviders, ...internalProviders];
   }
 
-  private async _loadCustomProvers(): Promise<FileheaderLanguageProvider[]> {
-    // not implement
-    return [];
+  private async loadCustomProvers(): Promise<FileheaderLanguageProvider[]> {
+    const providers: FileheaderLanguageProvider[] = [];
+    for (let folder of vscode.workspace.workspaceFolders || []) {
+      try {
+        const path = resolve(
+          folder.uri.fsPath,
+          ".vscode",
+          "fileheader.template.js"
+        );
+
+        const content = await fs.readFile(path, "utf8");
+        const templates = evalModule(content, path + getStringHash(content), {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          FileheaderLanguageProvider: FileheaderLanguageProvider,
+        }) as (new () => FileheaderLanguageProvider)[];
+
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        templates.forEach((TemplateConstructor) => {
+          const instance = new TemplateConstructor();
+          if (!(instance instanceof FileheaderLanguageProvider)) {
+            return;
+          }
+          instance.workspaceUri = folder.uri;
+          providers.push(instance);
+        });
+      } catch (e) {
+        console.error(e);
+        // ignore error
+      }
+    }
+    return providers;
   }
 }
 

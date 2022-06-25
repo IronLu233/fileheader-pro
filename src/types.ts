@@ -20,8 +20,6 @@ export type ITemplateFunction = (
 
 /**
  * Fileheader variables
- *
- * These fields can be disabled by VSCode config
  * some fields are inspired by https://www.jetbrains.com/help/idea/file-template-variables.html
  */
 export type IFileheaderVariables = {
@@ -29,7 +27,7 @@ export type IFileheaderVariables = {
    * file birth time
    * will get it from VCS or fallback to filesystem when it is not available
    */
-  birthTime?: string;
+  birthtime?: string;
 
   /**
    * file modified time
