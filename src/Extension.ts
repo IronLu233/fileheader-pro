@@ -1,4 +1,6 @@
 import * as vscode from "vscode";
+import { ConfigSection } from "./constants";
+import { extensionConfigManager } from "./ExtensionConfigManager";
 import { fileheaderManager } from "./FileheaderManager";
 
 class Extension {
@@ -45,6 +47,13 @@ class Extension {
   }
 
   private async onCreateDocument(e: vscode.FileCreateEvent) {
+    const enabled = extensionConfigManager.get<boolean>(
+      ConfigSection.autoInsertOnCreateFile
+    );
+    if (!enabled) {
+      return;
+    }
+
     for (let file of e.files) {
       const document = await vscode.workspace.openTextDocument(file);
       await fileheaderManager.updateFileheader(document, {
@@ -54,6 +63,12 @@ class Extension {
   }
 
   private onSaveDocument(e: vscode.TextDocumentWillSaveEvent) {
+    const enabled = extensionConfigManager.get<boolean>(
+      ConfigSection.autoUpdateOnSave
+    );
+    if (!enabled) {
+      return;
+    }
     // disable insert new fileheader because it will cause some issues
     // we only support update origin fileheader
     const updatePromise = fileheaderManager.updateFileheader(e.document, {

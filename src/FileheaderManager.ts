@@ -3,7 +3,6 @@ import { memoize } from "lodash-es";
 import { fileheaderProviderLoader } from "./FileheaderProviderLoader";
 import { FileheaderLanguageProvider } from "./FileheaderLanguageProviders";
 import { hasShebang } from "./Utils";
-import { extensionConfigManager } from "./ExtensionConfigManager";
 import { FileheaderVariableBuilder } from "./FileheaderVariableBuilder";
 import { IFileheaderVariables } from "./types";
 import { MissUserNameEmailError } from "./Error/MissUserNameEmailError";
@@ -92,10 +91,9 @@ class FileheaderManager {
       document,
       provider
     );
-    const config = extensionConfigManager.get();
+    const config = vscode.workspace.getConfiguration();
 
     let fileheaderVariable: IFileheaderVariables;
-    const currentWorkspace = vscode.workspace.getWorkspaceFolder(document.uri);
 
     try {
       fileheaderVariable = await new FileheaderVariableBuilder().build(

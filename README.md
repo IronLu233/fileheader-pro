@@ -1,12 +1,12 @@
 # Fileheader Pro
 Fileheader VSCode extension with out-of-box and full customizable 
 ## Features
-- Full customizable fileheader, You can write your owns programmable.
-- Auto add file header when create new file.
-- Auto update fileheader when necessary
-- Support get file info from Git, other VCS coming soon(SVN, Mercury)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- Full customizable. Write your own template **with javascript logic**
+- Auto add file header when create new file. **No need to add file header manually**
+- Auto update file header when save file
+- Support get info from Git
+
 
 ## Extension Settings
 > TBD

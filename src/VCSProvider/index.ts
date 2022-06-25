@@ -6,11 +6,13 @@ import { GitVCSProvider } from "./GitVCSProvider";
 // eslint-disable-next-line @typescript-eslint/naming-convention
 let VCSProvider: BaseVCSProvider = null as any;
 
-//TODO: get provider from workspace path
-if (extensionConfigManager.get().get("VCSProvider", "Git") === "Git") {
-  VCSProvider = new GitVCSProvider();
+// TODO: judge it from the workspace root
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function VCSProviderFactory() {
+  return new GitVCSProvider();
 }
 
+VCSProvider = VCSProviderFactory();
 invariant(VCSProvider, "VCSProvider is not found.");
 
 export { VCSProvider };

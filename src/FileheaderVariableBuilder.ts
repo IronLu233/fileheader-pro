@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { IFileheaderVariables } from "./types";
 import { VCSProvider } from "./VCSProvider";
 import { stat } from "fs/promises";
-import { ConfigSection, ExtensionConfigSectionKey } from "./constants";
+import { ConfigSection } from "./constants";
 
 /**
  *  get variable from VCS or fallback when it is not available
@@ -37,11 +37,11 @@ export class FileheaderVariableBuilder {
     const fsPath = fileUri.fsPath;
 
     const fixedUserName = config.get<string | null>(
-      ExtensionConfigSectionKey.userName,
+      ConfigSection.userName,
       null
     );
     const fixedUserEmail = config.get<string | null>(
-      ExtensionConfigSectionKey.userEmail,
+      ConfigSection.userEmail,
       null
     );
 
