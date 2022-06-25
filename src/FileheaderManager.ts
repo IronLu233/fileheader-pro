@@ -63,13 +63,10 @@ class FileheaderManager {
 
     // if there is a change in VCS provider, we should replace the fileheader
     const isTracked = await VCSProvider.isTracked(document.fileName);
-    if (isTracked) {
-      const hasChanged = await VCSProvider.hasChanged(document.fileName);
-      return !hasChanged;
-    }
+    const hasChanged =
+      isTracked && (await VCSProvider.hasChanged(document.fileName));
 
-    // if not, compare the file hash and if they are the same, we should skip
-    return fileHashMemento.has(document);
+    return !hasChanged && fileHashMemento.has(document);
   }
 
   public async updateFileheader(

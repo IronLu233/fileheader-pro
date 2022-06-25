@@ -3,6 +3,12 @@
   "displayName": "fileheader-pro",
   "description": "Conveniently and fully customizable fileheader extension",
   "version": "0.0.1",
+  "repository": "https://github.com/IronLu233/fileheader-pro",
+  "author": {
+    "name": "IronLu233",
+    "email": "lrironsora@gmail.com"
+  },
+  "bugs": "https://github.com/IronLu233/fileheader-pro/issues",
   "engines": {
     "vscode": "^1.68.0"
   },
@@ -61,7 +67,7 @@
         "FileheaderPro.autoUpdateOnSave": {
           "type": "boolean",
           "default": true,
-          "description": "Auto update fileheader when save file strictly changes"
+          "description": "Auto update fileheader when save file"
         }
       }
     }

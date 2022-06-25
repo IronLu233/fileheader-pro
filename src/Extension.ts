@@ -42,6 +42,7 @@ class Extension {
       vscode.workspace.onWillSaveTextDocument(this.onSaveDocument, this)
     );
 
+    this.onDidChangeVisibleTextEditors(vscode.window.visibleTextEditors);
     this.disposers.push(
       vscode.window.onDidChangeVisibleTextEditors(
         this.onDidChangeVisibleTextEditors
