@@ -66,4 +66,5 @@ class CustomLanguageProvider extends globalThis.FileheaderLanguageProvider {
   }
 }
 
+// export your provider classes
 module.exports = [CustomLanguageProvider];

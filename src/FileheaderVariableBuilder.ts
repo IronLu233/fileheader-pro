@@ -30,12 +30,17 @@ async function fallbackVariable<T>(
 export class FileheaderVariableBuilder {
   public async build(
     config: vscode.WorkspaceConfiguration,
-    fileUri: vscode.Uri
+    fileUri: vscode.Uri,
+    originVariable?: IFileheaderVariables
   ): Promise<IFileheaderVariables> {
     const workspace = vscode.workspace.getWorkspaceFolder(fileUri);
     workspace?.uri.path;
     const fsPath = fileUri.fsPath;
 
+    const dateFormat = config.get(
+      ConfigSection.dateFormat,
+      "YYYY-MM-DD HH:mm:ss"
+    );
     const fixedUserName = config.get<string | null>(
       ConfigSection.userName,
       null
@@ -44,6 +49,7 @@ export class FileheaderVariableBuilder {
       ConfigSection.userEmail,
       null
     );
+    const companyName = config.get<string>(ConfigSection.companyName)!;
 
     if (!fixedUserEmail || !fixedUserName) {
       await VCSProvider.validate(dirname(fsPath));
@@ -77,18 +83,17 @@ export class FileheaderVariableBuilder {
         )
       : userEmail;
 
-    const birthtime = isTracked
+    let birthtime = isTracked
       ? await fallbackVariable(
           () => VCSProvider.getBirthtime(fsPath),
           dayjs(fileStat.birthtime)
         )
       : dayjs(fileStat.birthtime);
+    const originBirthtime = dayjs(originVariable?.birthtime, dateFormat);
 
-    const companyName = config.get<string>(ConfigSection.companyName)!;
-    const dateFormat = config.get(
-      ConfigSection.dateFormat,
-      "YYYY-MM-DD HH:mm:ss"
-    );
+    if (originBirthtime.isBefore(birthtime)) {
+      birthtime = originBirthtime;
+    }
 
     const mtime = currentTime;
 

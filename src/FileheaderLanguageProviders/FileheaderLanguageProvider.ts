@@ -8,7 +8,7 @@
 #### ##     ##  #######  ##    ## ########  #######  #########  #######   #######  
 
  * @author        IronLu233 <lrironsora@gmail.com>
- * @date          2022-06-26 11:57:40
+ * @date          2022-06-19 11:06:08
  */
 import vscode from "vscode";
 import { evaluateTemplate, getTaggedTemplateInputs } from "../Utils";
@@ -105,7 +105,13 @@ export abstract class FileheaderLanguageProvider {
     );
     const pattern = templateValue
       .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-      .replace(new RegExp(TEMPLATE_WILDCARD_PLACEHOLDER, "g"), ".*")
+      .replace(
+        new RegExp(
+          `${TEMPLATE_WILDCARD_PLACEHOLDER}_(\\w+)_${TEMPLATE_WILDCARD_PLACEHOLDER}`,
+          "g"
+        ),
+        "(?<$1>.*)"
+      )
       .replace(/\n/g, eol === vscode.EndOfLine.CRLF ? "\r\n" : "\n");
 
     return new RegExp(pattern, "m");

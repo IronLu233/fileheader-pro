@@ -32,6 +32,12 @@ Press Ctrl+Shift+P(`Command+Shift+P` on Mac) for open your command palette.
 Then type `"Fileheader Pro: Generate Custom Fileheader Template"`
 A new [template file](https://github.com/IronLu233/fileheader-pro/blob/main/src/FileheaderLanguageProviders/provider.template.js) will be generated in your `${workspaceRoot}/.vscode/fileheader.template.js`
 
+Then modify the template file and save it.
+Your custom file header will take effect.
+
+**Old template can not be recognized now. Do not forget remove old fileheader. And debug your template first before you want to use it in your production**
+
+![image](https://user-images.githubusercontent.com/20639676/175812544-081edbb2-6596-48f1-8b7c-5a9825af8618.png)
 ## Extension Settings
 
 | Setting                              | Default Value         | Description                                                        |
@@ -46,6 +52,8 @@ A new [template file](https://github.com/IronLu233/fileheader-pro/blob/main/src/
 ## Known Issues
 
 Due to API limit, modify the source code and then manually edit to original in VCS will change the modified time.
+
+If user manually change the birthtime to earlier, Fileheader pro will not update birthtime substring.
 
 `mtime` of template variable may have some issues.
 If you find any issue, please report to [GitHub Issue](https://github.com/IronLu233/fileheader-pro/issues)

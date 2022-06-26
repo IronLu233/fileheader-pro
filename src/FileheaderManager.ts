@@ -41,17 +41,23 @@ class FileheaderManager {
   ) {
     const source = document.getText();
     const pattern = provider.getOriginFileheaderRegExp(document.eol);
-    const range = {
+    const range: {
+      start: number;
+      end: number;
+      content?: string;
+      variables?: IFileheaderVariables;
+    } = {
       start: -1,
       end: -1,
-      content: undefined as string | undefined,
+      content: undefined,
+      variables: undefined,
     };
     const result = source.match(pattern);
     if (result) {
       const match = result[0];
       range.content = match;
       range.start = result.index!;
-
+      range.variables = result.groups;
       range.end = range.start + match.length;
     }
     return range;
@@ -101,7 +107,8 @@ class FileheaderManager {
     try {
       fileheaderVariable = await new FileheaderVariableBuilder().build(
         config,
-        document.uri
+        document.uri,
+        originFileheaderInfo.variables
       );
     } catch (error) {
       if (error instanceof MissUserNameEmailError) {
