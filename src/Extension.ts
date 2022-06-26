@@ -96,6 +96,7 @@ class Extension {
     // we only support update origin fileheader
     const updatePromise = fileheaderManager.updateFileheader(e.document, {
       allowInsert: false,
+      silentWhenUnsupported: true,
     });
     e.waitUntil(updatePromise);
   }

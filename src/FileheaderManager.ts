@@ -79,7 +79,8 @@ class FileheaderManager {
     const provider = this._findProvider(document);
 
     if (!provider) {
-      (!silentWhenUnsupported || !allowInsert) &&
+      !silentWhenUnsupported &&
+        !allowInsert &&
         vscode.window.showErrorMessage("This language is not supported.");
       return;
     }
