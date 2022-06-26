@@ -63,8 +63,8 @@ class CustomLanguageProvider extends globalThis.FileheaderLanguageProvider {
     return tpl
 `/*
 ${ASCIIArt}
- * @author        IronLu233 <lrironsora@gmail.com>
- * @date          2022-06-26 11:57:40
+ * @author        ${variables.authorName} <${variables.authorEmail}>
+ * @date          ${variables.birthtime}
  */`;
   }
 }

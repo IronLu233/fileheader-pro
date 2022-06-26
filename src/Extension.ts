@@ -1,3 +1,15 @@
+/*
+#### ########   #######  ##    ## ##       ##     ##  #######   #######   #######  
+ ##  ##     ## ##     ## ###   ## ##       ##     ## ##     ## ##     ## ##     ## 
+ ##  ##     ## ##     ## ####  ## ##       ##     ##        ##        ##        ## 
+ ##  ########  ##     ## ## ## ## ##       ##     ##  #######   #######   #######  
+ ##  ##   ##   ##     ## ##  #### ##       ##     ## ##               ##        ## 
+ ##  ##    ##  ##     ## ##   ### ##       ##     ## ##        ##     ## ##     ## 
+#### ##     ##  #######  ##    ## ########  #######  #########  #######   #######  
+
+ * @author        Iron Lu <iron.lu@rcoffice.ringcentral.com>
+ * @date          2022-06-12 22:33:53
+ */
 import * as vscode from "vscode";
 import { ConfigSection, CUSTOM_TEMPLATE_FILE_NAME } from "./constants";
 import { extensionConfigManager } from "./ExtensionConfigManager";
