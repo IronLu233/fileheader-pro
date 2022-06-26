@@ -35,7 +35,7 @@ class FileheaderManager {
     });
   }
 
-  private getOriginFileheaderOffsetRange(
+  private getOriginFileheaderInfo(
     document: vscode.TextDocument,
     provider: FileheaderLanguageProvider
   ) {
@@ -44,10 +44,12 @@ class FileheaderManager {
     const range = {
       start: -1,
       end: -1,
+      content: undefined as string | undefined,
     };
     const result = source.match(pattern);
     if (result) {
       const match = result[0];
+      range.content = match;
       range.start = result.index!;
 
       range.end = range.start + match.length;
@@ -88,7 +90,7 @@ class FileheaderManager {
     let startLine =
       provider.startLineOffset + (hasShebang(document.getText()) ? 1 : 0);
 
-    const originFileheaderOffsetRange = this.getOriginFileheaderOffsetRange(
+    const originFileheaderInfo = this.getOriginFileheaderInfo(
       document,
       provider
     );
@@ -116,18 +118,17 @@ class FileheaderManager {
     const fileheader = provider.getFileheader(fileheaderVariable);
 
     const shouldSkipReplace =
-      originFileheaderOffsetRange.start !== -1 &&
-      (await this.shouldSkipReplace(document));
+      originFileheaderInfo.start !== -1 &&
+      (originFileheaderInfo.content === fileheader ||
+        (await this.shouldSkipReplace(document)));
 
     if (shouldSkipReplace) {
       return;
     }
 
-    if (originFileheaderOffsetRange.start !== -1) {
-      const originStart = document.positionAt(
-        originFileheaderOffsetRange.start
-      );
-      const originEnd = document.positionAt(originFileheaderOffsetRange.end);
+    if (originFileheaderInfo.start !== -1) {
+      const originStart = document.positionAt(originFileheaderInfo.start);
+      const originEnd = document.positionAt(originFileheaderInfo.end);
       await editor.edit((editBuilder) => {
         editBuilder.replace(
           new vscode.Range(originStart, originEnd),

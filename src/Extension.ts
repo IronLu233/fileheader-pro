@@ -91,6 +91,12 @@ class Extension {
 
     for (let file of e.files) {
       const document = await vscode.workspace.openTextDocument(file);
+      if (
+        document.lineCount > 1 ||
+        document.lineAt(0).text.trim().length !== 0
+      ) {
+        return;
+      }
       await fileheaderManager.updateFileheader(document, {
         silentWhenUnsupported: true,
       });
