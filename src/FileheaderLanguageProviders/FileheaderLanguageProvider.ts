@@ -1,3 +1,15 @@
+/*
+#### ########   #######  ##    ## ##       ##     ##  #######   #######   #######  
+ ##  ##     ## ##     ## ###   ## ##       ##     ## ##     ## ##     ## ##     ## 
+ ##  ##     ## ##     ## ####  ## ##       ##     ##        ##        ##        ## 
+ ##  ########  ##     ## ## ## ## ##       ##     ##  #######   #######   #######  
+ ##  ##   ##   ##     ## ##  #### ##       ##     ## ##               ##        ## 
+ ##  ##    ##  ##     ## ##   ### ##       ##     ## ##        ##     ## ##     ## 
+#### ##     ##  #######  ##    ## ########  #######  #########  #######   #######  
+
+ * @author        IronLu233 <lrironsora@gmail.com>
+ * @date          2022-06-26 11:57:40
+ */
 import vscode from "vscode";
 import { evaluateTemplate, getTaggedTemplateInputs } from "../Utils";
 import { IFileheaderVariables, ITemplateFunction, Template } from "../types";

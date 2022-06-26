@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { ConfigSection } from "./constants";
+import { ConfigSection, CUSTOM_TEMPLATE_FILE_NAME } from "./constants";
 import { extensionConfigManager } from "./ExtensionConfigManager";
 import { FileheaderLanguageProvider } from "./FileheaderLanguageProviders";
 import { fileheaderManager } from "./FileheaderManager";
@@ -90,6 +90,10 @@ class Extension {
       ConfigSection.autoUpdateOnSave
     );
     if (!enabled) {
+      return;
+    }
+
+    if (e.document.uri.path.includes(`.vscode/${CUSTOM_TEMPLATE_FILE_NAME}`)) {
       return;
     }
     // disable insert new fileheader because it will cause some issues

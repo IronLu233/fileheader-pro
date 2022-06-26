@@ -26,10 +26,16 @@ class FileheaderProviderLoader {
         );
 
         const content = await fs.readFile(path, "utf8");
-        const templates = evalModule(content, path + getStringHash(content), {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          FileheaderLanguageProvider: FileheaderLanguageProvider,
-        }) as (new () => FileheaderLanguageProvider)[];
+        const templates = evalModule(
+          content,
+          path + getStringHash(content),
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            FileheaderLanguageProvider: FileheaderLanguageProvider,
+            __dirname: resolve(folder.uri.fsPath, ".vscode"),
+          },
+          true
+        ) as (new () => FileheaderLanguageProvider)[];
 
         // eslint-disable-next-line @typescript-eslint/naming-convention
         templates.forEach((TemplateConstructor) => {
@@ -42,6 +48,13 @@ class FileheaderProviderLoader {
         });
       } catch (e) {
         console.error(e);
+
+        vscode.window.showErrorMessage(
+          `Your custom template file has runtime error.Reason:\n${
+            (e as Error).message
+          }`
+        );
+
         // ignore error
       }
     }

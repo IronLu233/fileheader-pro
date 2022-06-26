@@ -16,11 +16,13 @@ export class TypescriptFileheaderProvider extends FileheaderLanguageProvider {
     tpl: ITemplateFunction,
     variables: IFileheaderVariables
   ) {
-    return tpl`/*
-* @author        ${variables.authorName} <${variables.authorEmail}>
-* @date          ${variables.birthtime}
-* @lastModified  ${variables.mtime}
-* Copyright © ${variables.companyName} All rights reserved
-*/`;
+    // prettier-ignore
+    return tpl
+`/*
+ * @author        ${variables.authorName} <${variables.authorEmail}>
+ * @date          ${variables.birthtime}
+ * @lastModified  ${variables.mtime}
+ * Copyright © ${variables.companyName} All rights reserved
+ */`;
   }
 }

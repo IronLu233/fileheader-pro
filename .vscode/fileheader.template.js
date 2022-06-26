@@ -23,6 +23,10 @@
  *
  */
 
+const { resolve } = require('path');
+const { readFileSync } = require('fs');
+const ASCIIArt = readFileSync(resolve(__dirname, './ASCIIART.txt'), 'utf8');
+
 /**
  * Please confirm your provider extends from globalThis.FileheaderLanguageProvider
  */
@@ -58,10 +62,9 @@ class CustomLanguageProvider extends globalThis.FileheaderLanguageProvider {
     // prettier-ignore
     return tpl
 `/*
- * @author        ${variables.authorName} <${variables.authorEmail}>
- * @date          ${variables.birthtime}
- * @lastModified  ${variables.mtime}
- * Copyright © ${variables.companyName} All rights reserved
+${ASCIIArt}
+ * @author        IronLu233 <lrironsora@gmail.com>
+ * @date          2022-06-26 11:57:40
  */`;
   }
 }
