@@ -8,6 +8,8 @@ import { MissUserNameEmailError } from "./Error/MissUserNameEmailError";
 import { NoVCSProviderError } from "./Error/NoVCSProviderError";
 import { fileHashMemento } from "./FileHashMemento";
 import { VCSProvider } from "./VCSProvider";
+import { debounce } from "lodash-es";
+import { UPDATE_FILEHEADER_THRESHOLD } from "./constants";
 
 type UpdateFileheaderManagerOptions = {
   silentWhenUnsupported?: boolean;
@@ -133,8 +135,12 @@ class FileheaderManager {
       return;
     }
 
-    if (originFileheaderInfo.start !== -1) {
-      const originStart = document.positionAt(originFileheaderInfo.start);
+    let originStart: vscode.Position;
+    if (
+      originFileheaderInfo.start !== -1 &&
+      (originStart = document.positionAt(originFileheaderInfo.start)) &&
+      originStart.line === startLine
+    ) {
       const originEnd = document.positionAt(originFileheaderInfo.end);
       await editor.edit((editBuilder) => {
         editBuilder.replace(
@@ -150,6 +156,7 @@ class FileheaderManager {
       await editor.edit((editBuilder) => {
         editBuilder.insert(new vscode.Position(startLine, 0), value);
       });
+      await document.save();
     }
 
     fileHashMemento.set(document);

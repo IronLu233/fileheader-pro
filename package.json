@@ -61,7 +61,7 @@
         "FileheaderPro.dateFormat": {
           "type": "string",
           "default": "YYYY-MM-DD HH:mm:ss",
-          "description": "The date format, see https://momentjs.com/docs/#/displaying/format"
+          "markdownDescription": "The date format, see [Dayjs Document](https://momentjs.com/docs/#/displaying/format)"
         },
         "FileheaderPro.autoInsertOnCreateFile": {
           "type": "boolean",
@@ -72,6 +72,40 @@
           "type": "boolean",
           "default": true,
           "description": "Auto update fileheader when save file"
+        },
+        "FileheaderPro.disableFields": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string",
+            "enum": [
+              "birthtime",
+              "mtime",
+              "authorName",
+              "authorEmail",
+              "userName",
+              "userEmail",
+              "companyName",
+              "projectName",
+              "filePath",
+              "dirPath",
+              "fileName"
+            ]
+          },
+          "markdownEnumDescriptions": [
+            "file birth time. will get it from VCS or fallback to filesystem when it is not available",
+            "file last modified time. will get it from VCS or fallback to filesystem when it is not available",
+            "file author name. if the file is tracked by VCS, it will get the author name from VCS, else it will get it from current user name",
+            "file author email. if the file is tracked by VCS, it will get the author email from VCS, else it will get it from current user email",
+            "current user name. the default is from your git config. Can be override by #FileheaderPro.currentUserName#",
+            "current user email. the default is from your git config. Can be override by #FileheaderPro.currentUserEmail#",
+            "Company name",
+            "project name. the name of current project",
+            "the file path. relative to project root. POSIX path separator",
+            "the directory path. relative to project root. POSIX path separator",
+            "the file name including extension"
+          ],
+          "description": "Disable fields in fileheader. For default fileheader template, the contain fields are omitted"
         }
       }
     }
@@ -114,6 +148,7 @@
     "dayjs": "^1.11.3",
     "delay": "^5.0.0",
     "eval": "^0.1.8",
+    "fs.promises.exists": "^1.1.3",
     "invariant": "^2.2.4",
     "lodash-es": "^4.17.21",
     "winston": "^3.8.0"

@@ -2,7 +2,10 @@ import vscode from "vscode";
 import { ChildProcess, exec as _exec, ExecOptions } from "child_process";
 import { CommandExecError } from "./Error/CommandExecError";
 import { Template, TemplateInterpolation } from "./types";
-import { TEMPLATE_SYMBOL_KEY } from "./constants";
+import {
+  TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER,
+  TEMPLATE_SYMBOL_KEY,
+} from "./constants";
 import crypto from "crypto";
 /**
  * whether text starts with `'#!'`
@@ -91,9 +94,14 @@ export function delayUntil(
  */
 export function evaluateTemplate(
   strings: ReadonlyArray<string>,
-  interpolations: TemplateInterpolation[]
+  interpolations: TemplateInterpolation[],
+  addOptionalRegexpMark = false
 ) {
   const [first, ...restStrings] = strings;
+  const addMarks = (str: TemplateInterpolation) =>
+    addOptionalRegexpMark
+      ? `${TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER.start}${str}${TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER.end}`
+      : str;
   let result = first;
 
   for (let index = 0; index < interpolations.length; index++) {
@@ -103,13 +111,17 @@ export function evaluateTemplate(
       typeof interpolation === "object" &&
       interpolation[TEMPLATE_SYMBOL_KEY]
     ) {
-      result += evaluateTemplate(
-        interpolation.strings,
-        interpolation.interpolations
-      );
+      result +=
+        addMarks(
+          evaluateTemplate(
+            interpolation.strings,
+            interpolation.interpolations,
+            addOptionalRegexpMark
+          )
+        ) || "";
       result += restStrings[index];
     } else {
-      result += (interpolation ?? "") + restStrings[index];
+      result += addMarks(interpolation || "") + restStrings[index];
     }
   }
 

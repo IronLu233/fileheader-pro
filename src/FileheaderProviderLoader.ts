@@ -1,5 +1,6 @@
-import { resolve } from "path";
+import { join, resolve } from "path";
 import fs from "fs/promises";
+import exists from "fs.promises.exists";
 import vscode from "vscode";
 import evalModule from "eval";
 import {
@@ -18,13 +19,17 @@ class FileheaderProviderLoader {
   private async loadCustomProvers(): Promise<FileheaderLanguageProvider[]> {
     const providers: FileheaderLanguageProvider[] = [];
     for (let folder of vscode.workspace.workspaceFolders || []) {
-      try {
-        const path = resolve(
-          folder.uri.fsPath,
-          ".vscode",
-          CUSTOM_TEMPLATE_FILE_NAME
-        );
+      const path = join(
+        folder.uri.fsPath,
+        ".vscode",
+        CUSTOM_TEMPLATE_FILE_NAME
+      );
 
+      if (!(await exists(path))) {
+        continue;
+      }
+
+      try {
         const content = await fs.readFile(path, "utf8");
         const templates = evalModule(
           content,

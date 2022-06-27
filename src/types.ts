@@ -5,6 +5,7 @@ export type TemplateInterpolation =
   | number
   | null
   | undefined
+  | boolean
   | Template;
 
 export type Template = {
@@ -77,7 +78,7 @@ export type IFileheaderVariables = {
   dirPath?: string;
 
   /**
-   * filename with extension
+   * filename including extension
    */
   fileName?: string;
 };

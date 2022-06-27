@@ -16,20 +16,28 @@ import { FileheaderLanguageProvider } from "./FileheaderLanguageProvider";
 export class PythonFileheaderProvider extends FileheaderLanguageProvider {
   languages: string[] = ["python"];
 
-  blockCommentStart: string = "/*";
-  blockCommentEnd: string = "*/";
+  blockCommentStart: string = "'''";
+  blockCommentEnd: string = "'''";
 
   override getTemplate(
     tpl: ITemplateFunction,
     variables: IFileheaderVariables
   ) {
+    const authorEmailPart =
+      variables.authorEmail && `<${variables.authorEmail}>`;
+    const authorLine =
+      variables.authorName &&
+      `\n@author        ${variables.authorName} ${authorEmailPart}`;
+    const birthtimeLine =
+      variables.birthtime && `\n@date          ${variables.birthtime}`;
+    const lastModifiedLine =
+      variables.mtime && `\n@lastModified  ${variables.mtime}`;
+    const companyNameLine =
+      variables.companyName && `\n@copyright     ${variables.companyName}`;
+
     // prettier-ignore
     return tpl
-`'''
-@author:        ${variables.authorName} <${variables.authorEmail}>
-@date:          ${variables.birthtime}
-@lastModified:  ${variables.mtime}
-Copyright © ${variables.companyName} All rights reserved
+`'''${authorLine}${birthtimeLine}${lastModifiedLine}${companyNameLine}
 '''`;
   }
 }

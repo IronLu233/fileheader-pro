@@ -16,13 +16,35 @@ export class TypescriptFileheaderProvider extends FileheaderLanguageProvider {
     tpl: ITemplateFunction,
     variables: IFileheaderVariables
   ) {
+    const hasAuthor = variables.authorName;
+    const authorEmailPart =
+      !!variables.authorEmail && tpl`<${variables.authorEmail}>`;
+
+    const authorLine =
+      hasAuthor &&
+      tpl`\n * @author        ${variables.authorName} ${authorEmailPart}`;
+
+    const birthtimeLine =
+      variables.birthtime && tpl`\n * @date          ${variables.birthtime}`;
+
+    const lastModifiedLine =
+      variables.mtime && tpl`\n * @lastModified  ${variables.mtime}`;
+
+    const companyNameLine =
+      variables.companyName &&
+      tpl`\n * Copyright © ${variables.companyName} All rights reserved`;
+
     // prettier-ignore
     return tpl
-`/*
- * @author        ${variables.authorName} <${variables.authorEmail}>
- * @date          ${variables.birthtime}
- * @lastModified  ${variables.mtime}
- * Copyright © ${variables.companyName} All rights reserved
+`/*${authorLine}${birthtimeLine}${lastModifiedLine}${companyNameLine}
  */`;
+
+    // like this:
+    /*
+     * @author        ${variables.authorName} <${variables.authorEmail}>
+     * @date          ${variables.birthtime}
+     * @lastModified  ${variables.mtime}
+     * Copyright © ${variables.companyName} All rights reserved
+     */
   }
 }

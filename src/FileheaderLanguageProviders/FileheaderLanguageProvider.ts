@@ -15,7 +15,8 @@ import { evaluateTemplate, getTaggedTemplateInputs } from "../Utils";
 import { IFileheaderVariables, ITemplateFunction, Template } from "../types";
 import {
   CUSTOM_TEMPLATE_FILE_NAME,
-  TEMPLATE_WILDCARD_PLACEHOLDER,
+  TEMPLATE_NAMED_GROUP_WILDCARD_PLACEHOLDER,
+  TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER,
   WILDCARD_ACCESS_VARIABLES,
 } from "../constants";
 import { writeFile } from "fs/promises";
@@ -101,13 +102,22 @@ export abstract class FileheaderLanguageProvider {
 
     const templateValue = evaluateTemplate(
       template.strings,
-      template.interpolations
+      template.interpolations,
+      true
     );
     const pattern = templateValue
       .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
       .replace(
+        new RegExp(`${TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER.start}`, "g"),
+        "(?:"
+      )
+      .replace(
+        new RegExp(`${TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER.end}`, "g"),
+        ")?"
+      )
+      .replace(
         new RegExp(
-          `${TEMPLATE_WILDCARD_PLACEHOLDER}_(\\w+)_${TEMPLATE_WILDCARD_PLACEHOLDER}`,
+          `${TEMPLATE_NAMED_GROUP_WILDCARD_PLACEHOLDER}_(\\w+)_${TEMPLATE_NAMED_GROUP_WILDCARD_PLACEHOLDER}`,
           "g"
         ),
         "(?<$1>.*)"
