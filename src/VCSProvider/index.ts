@@ -1,3 +1,15 @@
+/*
+#### ########   #######  ##    ## ##       ##     ##  #######   #######   #######  
+ ##  ##     ## ##     ## ###   ## ##       ##     ## ##     ## ##     ## ##     ## 
+ ##  ##     ## ##     ## ####  ## ##       ##     ##        ##        ##        ## 
+ ##  ########  ##     ## ## ## ## ##       ##     ##  #######   #######   #######  
+ ##  ##   ##   ##     ## ##  #### ##       ##     ## ##               ##        ## 
+ ##  ##    ##  ##     ## ##   ### ##       ##     ## ##        ##     ## ##     ## 
+#### ##     ##  #######  ##    ## ########  #######  #########  #######   #######  
+
+ * @author        IronLu233 <lrironsora@gmail.com>
+ * @date          2022-06-19 11:06:08
+ */
 import invariant from "invariant";
 import { extensionConfigManager } from "../ExtensionConfigManager";
 import { BaseVCSProvider } from "./BaseVCSProvider";

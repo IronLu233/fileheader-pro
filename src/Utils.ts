@@ -1,3 +1,15 @@
+/*
+#### ########   #######  ##    ## ##       ##     ##  #######   #######   #######  
+ ##  ##     ## ##     ## ###   ## ##       ##     ## ##     ## ##     ## ##     ## 
+ ##  ##     ## ##     ## ####  ## ##       ##     ##        ##        ##        ## 
+ ##  ########  ##     ## ## ## ## ##       ##     ##  #######   #######   #######  
+ ##  ##   ##   ##     ## ##  #### ##       ##     ## ##               ##        ## 
+ ##  ##    ##  ##     ## ##   ### ##       ##     ## ##        ##     ## ##     ## 
+#### ##     ##  #######  ##    ## ########  #######  #########  #######   #######  
+
+ * @author        IronLu233 <lrironsora@gmail.com>
+ * @date          2022-06-12 22:33:53
+ */
 import vscode from "vscode";
 import { ChildProcess, exec as _exec, ExecOptions } from "child_process";
 import { CommandExecError } from "./Error/CommandExecError";
