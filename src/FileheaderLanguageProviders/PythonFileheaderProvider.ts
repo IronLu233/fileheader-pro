@@ -33,7 +33,8 @@ export class PythonFileheaderProvider extends FileheaderLanguageProvider {
     const lastModifiedLine =
       variables.mtime && `\n@lastModified  ${variables.mtime}`;
     const companyNameLine =
-      variables.companyName && `\n@copyright     ${variables.companyName}`;
+      variables.companyName &&
+      `\nCopyright © ${variables.companyName} All rights reserved`;
 
     // prettier-ignore
     return tpl
