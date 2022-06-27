@@ -4,3 +4,4 @@ node_modules
 .vscode-test/
 *.vsix
 submodules/vscode-extension-samples
+.vscode/symbols.json

@@ -107,6 +107,10 @@ export abstract class FileheaderLanguageProvider {
     );
     const pattern = templateValue
       .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+
+      // user custom template may have `\r\n`, for example, read a file in Windows.
+      // We should normalize it to `\n`
+      .replace(/\r\n/g, "\n")
       .replace(
         new RegExp(`${TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER.start}`, "g"),
         "(?:"

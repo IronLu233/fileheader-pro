@@ -20,8 +20,6 @@ import { MissUserNameEmailError } from "./Error/MissUserNameEmailError";
 import { NoVCSProviderError } from "./Error/NoVCSProviderError";
 import { fileHashMemento } from "./FileHashMemento";
 import { VCSProvider } from "./VCSProvider";
-import { debounce } from "lodash-es";
-import { UPDATE_FILEHEADER_THRESHOLD } from "./constants";
 
 type UpdateFileheaderManagerOptions = {
   silentWhenUnsupported?: boolean;
