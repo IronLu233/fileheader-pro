@@ -14,37 +14,24 @@ import { IFileheaderVariables, ITemplateFunction } from "../types";
 import { FileheaderLanguageProvider } from "./FileheaderLanguageProvider";
 
 export class TypescriptFileheaderProvider extends FileheaderLanguageProvider {
-  languages: string[] = [
-    "typescript",
-    "javascript",
-    "javascriptreact",
-    "typescriptreact",
-  ];
+  languages: string[] = ["typescript", "javascript", "javascriptreact", "typescriptreact"];
 
   blockCommentStart: string = "/*";
   blockCommentEnd: string = "*/";
 
-  override getTemplate(
-    tpl: ITemplateFunction,
-    variables: IFileheaderVariables
-  ) {
+  override getTemplate(tpl: ITemplateFunction, variables: IFileheaderVariables) {
     const hasAuthor = variables.authorName;
-    const authorEmailPart =
-      !!variables.authorEmail && tpl`<${variables.authorEmail}>`;
+    const authorEmailPart = !!variables.authorEmail && tpl`<${variables.authorEmail}>`;
 
     const authorLine =
-      hasAuthor &&
-      tpl`\n * @author        ${variables.authorName} ${authorEmailPart}`;
+      hasAuthor && tpl`\n * @author        ${variables.authorName} ${authorEmailPart}`;
 
-    const birthtimeLine =
-      variables.birthtime && tpl`\n * @date          ${variables.birthtime}`;
+    const birthtimeLine = variables.birthtime && tpl`\n * @date          ${variables.birthtime}`;
 
-    const lastModifiedLine =
-      variables.mtime && tpl`\n * @lastModified  ${variables.mtime}`;
+    const lastModifiedLine = variables.mtime && tpl`\n * @lastModified  ${variables.mtime}`;
 
     const companyNameLine =
-      variables.companyName &&
-      tpl`\n * Copyright © ${variables.companyName} All rights reserved`;
+      variables.companyName && tpl`\n * Copyright © ${variables.companyName} All rights reserved`;
 
     // prettier-ignore
     return tpl

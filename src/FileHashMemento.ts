@@ -15,7 +15,7 @@ import { difference } from "lodash-es";
 import { getStringHash } from "./Utils";
 
 class FileHashMemento {
-  records: Map<string, string> = new Map();
+  records = new Map<vscode.TextDocument["fileName"], string>();
 
   private calculate(source: string) {
     return getStringHash(source);
@@ -28,15 +28,15 @@ class FileHashMemento {
 
   update(documents: vscode.TextDocument[]) {
     const originKeys = Array.from(this.records.keys());
-    const newDocumentMap = new Map(
-      documents.map((d) => [d.fileName, d] as const)
+    const newDocumentMap = new Map<vscode.TextDocument["fileName"], vscode.TextDocument>(
+      documents.map(d => [d.fileName, d] as const)
     );
     const newDocumentKey = Array.from(newDocumentMap.keys());
     const removedKeys = difference(originKeys, newDocumentKey);
     const newInsertKeys = difference(newDocumentKey, originKeys);
 
-    removedKeys.forEach((key) => this.records.delete(key));
-    newInsertKeys.forEach((key) => this.set(newDocumentMap.get(key)!));
+    removedKeys.forEach(key => this.records.delete(key));
+    newInsertKeys.forEach(key => this.set(newDocumentMap.get(key)!));
   }
 
   remove(document: vscode.TextDocument) {

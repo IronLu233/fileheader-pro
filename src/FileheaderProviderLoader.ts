@@ -15,10 +15,7 @@ import fs from "fs/promises";
 import exists from "fs.promises.exists";
 import vscode from "vscode";
 import evalModule from "eval";
-import {
-  internalProviders,
-  FileheaderLanguageProvider,
-} from "./FileheaderLanguageProviders";
+import { internalProviders, FileheaderLanguageProvider } from "./FileheaderLanguageProviders";
 import { getStringHash } from "./Utils";
 import { CUSTOM_TEMPLATE_FILE_NAME } from "./constants";
 
@@ -31,11 +28,7 @@ class FileheaderProviderLoader {
   private async loadCustomProvers(): Promise<FileheaderLanguageProvider[]> {
     const providers: FileheaderLanguageProvider[] = [];
     for (let folder of vscode.workspace.workspaceFolders || []) {
-      const path = join(
-        folder.uri.fsPath,
-        ".vscode",
-        CUSTOM_TEMPLATE_FILE_NAME
-      );
+      const path = join(folder.uri.fsPath, ".vscode", CUSTOM_TEMPLATE_FILE_NAME);
 
       if (!(await exists(path))) {
         continue;
@@ -55,7 +48,7 @@ class FileheaderProviderLoader {
         ) as (new () => FileheaderLanguageProvider)[];
 
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        templates.forEach((TemplateConstructor) => {
+        templates.forEach(TemplateConstructor => {
           const instance = new TemplateConstructor();
           if (!(instance instanceof FileheaderLanguageProvider)) {
             return;
@@ -67,9 +60,7 @@ class FileheaderProviderLoader {
         console.error(e);
 
         vscode.window.showErrorMessage(
-          `Your custom template file has runtime error.Reason:\n${
-            (e as Error).message
-          }`
+          `Your custom template file has runtime error.Reason:\n${(e as Error).message}`
         );
 
         // ignore error

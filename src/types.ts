@@ -12,13 +12,7 @@
  */
 import { TEMPLATE_SYMBOL_KEY } from "./constants";
 
-export type TemplateInterpolation =
-  | string
-  | number
-  | null
-  | undefined
-  | boolean
-  | Template;
+export type TemplateInterpolation = string | number | null | undefined | boolean | Template;
 
 export type Template = {
   [TEMPLATE_SYMBOL_KEY]: true;
@@ -35,7 +29,7 @@ export type ITemplateFunction = (
  * Fileheader variables
  * some fields are inspired by https://www.jetbrains.com/help/idea/file-template-variables.html
  */
-export type IFileheaderVariables = {
+export interface IFileheaderVariables {
   /**
    * file birth time
    * will get it from VCS or fallback to filesystem when it is not available
@@ -93,4 +87,4 @@ export type IFileheaderVariables = {
    * filename including extension
    */
   fileName?: string;
-};
+}

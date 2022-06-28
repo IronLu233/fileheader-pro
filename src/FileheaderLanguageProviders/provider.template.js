@@ -17,10 +17,10 @@
  * @property {string} dirPath the directory path, relative to project root with POSIX path separator
  * @property {string} fileName filename with extension
  */
- 
- /**
+
+/**
  * @typedef {string | number | null | undefined | Template | boolean} TemplateInterpolation NOTE: boolean or falsy value will render empty string
- * 
+ *
  * @typedef {{ strings: TemplateStringsArray; interpolations: TemplateInterpolation[]; }} Template
  * @typedef {(strings: TemplateStringsArray, ...values: any[]) => string} ITemplateFunction
  *
@@ -33,12 +33,7 @@ class CustomLanguageProvider extends globalThis.FileheaderLanguageProvider {
   /**
    * @type {string[]}
    */
-  languages = [
-    "javascript",
-    "typescript",
-    "javascriptreact",
-    "typescriptreact",
-  ];
+  languages = ["javascript", "typescript", "javascriptreact", "typescriptreact"];
 
   /**
    * @type {string=} the language block comment start string.

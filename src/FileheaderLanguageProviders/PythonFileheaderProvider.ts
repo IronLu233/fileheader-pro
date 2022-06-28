@@ -19,22 +19,14 @@ export class PythonFileheaderProvider extends FileheaderLanguageProvider {
   blockCommentStart: string = "'''";
   blockCommentEnd: string = "'''";
 
-  override getTemplate(
-    tpl: ITemplateFunction,
-    variables: IFileheaderVariables
-  ) {
-    const authorEmailPart =
-      variables.authorEmail && `<${variables.authorEmail}>`;
+  override getTemplate(tpl: ITemplateFunction, variables: IFileheaderVariables) {
+    const authorEmailPart = variables.authorEmail && `<${variables.authorEmail}>`;
     const authorLine =
-      variables.authorName &&
-      `\n@author        ${variables.authorName} ${authorEmailPart}`;
-    const birthtimeLine =
-      variables.birthtime && `\n@date          ${variables.birthtime}`;
-    const lastModifiedLine =
-      variables.mtime && `\n@lastModified  ${variables.mtime}`;
+      variables.authorName && `\n@author        ${variables.authorName} ${authorEmailPart}`;
+    const birthtimeLine = variables.birthtime && `\n@date          ${variables.birthtime}`;
+    const lastModifiedLine = variables.mtime && `\n@lastModified  ${variables.mtime}`;
     const companyNameLine =
-      variables.companyName &&
-      `\nCopyright © ${variables.companyName} All rights reserved`;
+      variables.companyName && `\nCopyright © ${variables.companyName} All rights reserved`;
 
     // prettier-ignore
     return tpl

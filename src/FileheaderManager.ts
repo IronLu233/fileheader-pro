@@ -35,7 +35,7 @@ class FileheaderManager {
 
   private _findProvider(document: vscode.TextDocument) {
     const languageId = document.languageId;
-    return this._providers.find((provider) => {
+    return this._providers.find(provider => {
       if (
         provider.workspaceScopeUri &&
         vscode.workspace.getWorkspaceFolder(document.uri)?.uri.path !==
@@ -43,7 +43,7 @@ class FileheaderManager {
       ) {
         return false;
       }
-      return provider.languages.some((l) => l === languageId);
+      return provider.languages.some(l => l === languageId);
     });
   }
 
@@ -83,18 +83,14 @@ class FileheaderManager {
 
     // if there is a change in VCS provider, we should replace the fileheader
     const isTracked = await VCSProvider.isTracked(document.fileName);
-    const hasChanged =
-      isTracked && (await VCSProvider.hasChanged(document.fileName));
+    const hasChanged = isTracked && (await VCSProvider.hasChanged(document.fileName));
 
     return !hasChanged && fileHashMemento.has(document);
   }
 
   public async updateFileheader(
     document: vscode.TextDocument,
-    {
-      allowInsert = true,
-      silentWhenUnsupported = false,
-    }: UpdateFileheaderManagerOptions = {}
+    { allowInsert = true, silentWhenUnsupported = false }: UpdateFileheaderManagerOptions = {}
   ) {
     const provider = this._findProvider(document);
 
@@ -105,13 +101,9 @@ class FileheaderManager {
       return;
     }
 
-    let startLine =
-      provider.startLineOffset + (hasShebang(document.getText()) ? 1 : 0);
+    let startLine = provider.startLineOffset + (hasShebang(document.getText()) ? 1 : 0);
 
-    const originFileheaderInfo = this.getOriginFileheaderInfo(
-      document,
-      provider
-    );
+    const originFileheaderInfo = this.getOriginFileheaderInfo(document, provider);
     const config = vscode.workspace.getConfiguration();
 
     let fileheaderVariable: IFileheaderVariables;
@@ -138,8 +130,7 @@ class FileheaderManager {
 
     const shouldSkipReplace =
       originFileheaderInfo.start !== -1 &&
-      (originFileheaderInfo.content === fileheader ||
-        (await this.shouldSkipReplace(document)));
+      (originFileheaderInfo.content === fileheader || (await this.shouldSkipReplace(document)));
 
     if (shouldSkipReplace) {
       return;
@@ -152,18 +143,15 @@ class FileheaderManager {
       originStart.line === startLine
     ) {
       const originEnd = document.positionAt(originFileheaderInfo.end);
-      await editor.edit((editBuilder) => {
-        editBuilder.replace(
-          new vscode.Range(originStart, originEnd),
-          fileheader
-        );
+      await editor.edit(editBuilder => {
+        editBuilder.replace(new vscode.Range(originStart, originEnd), fileheader);
       });
     } else if (allowInsert) {
       const onlyHasSingleLine = document.lineCount === 1;
       const isLeadingLineEmpty = document.lineAt(startLine).isEmptyOrWhitespace;
       const shouldInsertLineBreak = !isLeadingLineEmpty || onlyHasSingleLine;
       const value = shouldInsertLineBreak ? fileheader + "\n" : fileheader;
-      await editor.edit((editBuilder) => {
+      await editor.edit(editBuilder => {
         editBuilder.insert(new vscode.Position(startLine, 0), value);
       });
       await document.save();

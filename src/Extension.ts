@@ -23,11 +23,7 @@ class Extension {
   activate = async (context: vscode.ExtensionContext) => {
     await fileheaderManager.loadProviders();
     this.disposers.push(
-      vscode.commands.registerCommand(
-        "fileheader-pro.fileheader",
-        this.addFileheader,
-        this
-      )
+      vscode.commands.registerCommand("fileheader-pro.fileheader", this.addFileheader, this)
     );
 
     this.disposers.push(
@@ -41,24 +37,16 @@ class Extension {
     this.createCustomTemplateFileListener();
 
     this.disposers.push(
-      vscode.workspace.onDidChangeWorkspaceFolders(
-        this.createCustomTemplateFileListener
-      )
+      vscode.workspace.onDidChangeWorkspaceFolders(this.createCustomTemplateFileListener)
     );
 
-    this.disposers.push(
-      vscode.workspace.onDidCreateFiles(this.onCreateDocument, this)
-    );
+    this.disposers.push(vscode.workspace.onDidCreateFiles(this.onCreateDocument, this));
 
-    this.disposers.push(
-      vscode.workspace.onWillSaveTextDocument(this.onSaveDocument, this)
-    );
+    this.disposers.push(vscode.workspace.onWillSaveTextDocument(this.onSaveDocument, this));
 
     this.onDidChangeVisibleTextEditors(vscode.window.visibleTextEditors);
     this.disposers.push(
-      vscode.window.onDidChangeVisibleTextEditors(
-        this.onDidChangeVisibleTextEditors
-      )
+      vscode.window.onDidChangeVisibleTextEditors(this.onDidChangeVisibleTextEditors)
     );
   };
 
@@ -82,19 +70,14 @@ class Extension {
   }
 
   private async onCreateDocument(e: vscode.FileCreateEvent) {
-    const enabled = extensionConfigManager.get<boolean>(
-      ConfigSection.autoInsertOnCreateFile
-    );
+    const enabled = extensionConfigManager.get<boolean>(ConfigSection.autoInsertOnCreateFile);
     if (!enabled) {
       return;
     }
 
     for (let file of e.files) {
       const document = await vscode.workspace.openTextDocument(file);
-      if (
-        document.lineCount > 1 ||
-        document.lineAt(0).text.trim().length !== 0
-      ) {
+      if (document.lineCount > 1 || document.lineAt(0).text.trim().length !== 0) {
         return;
       }
       await fileheaderManager.updateFileheader(document, {
@@ -104,9 +87,7 @@ class Extension {
   }
 
   private onSaveDocument(e: vscode.TextDocumentWillSaveEvent) {
-    const enabled = extensionConfigManager.get<boolean>(
-      ConfigSection.autoUpdateOnSave
-    );
+    const enabled = extensionConfigManager.get<boolean>(ConfigSection.autoUpdateOnSave);
     if (!enabled) {
       return;
     }
@@ -124,15 +105,14 @@ class Extension {
   }
 
   private onDidChangeVisibleTextEditors(e: readonly vscode.TextEditor[]) {
-    fileheaderManager.recordOriginFileHash(e.map((it) => it.document));
+    fileheaderManager.recordOriginFileHash(e.map(it => it.document));
   }
 
   private async createCustomTemplateFileListener() {
     this.customTemplateFileheaderWatcher?.dispose();
-    this.customTemplateFileheaderWatcher =
-      vscode.workspace.createFileSystemWatcher(
-        "**/.vscode/fileheader.template.js"
-      );
+    this.customTemplateFileheaderWatcher = vscode.workspace.createFileSystemWatcher(
+      "**/.vscode/fileheader.template.js"
+    );
 
     const reloadProviders = () => {
       fileheaderManager.loadProviders();

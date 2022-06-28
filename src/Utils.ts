@@ -14,10 +14,7 @@ import vscode from "vscode";
 import { ChildProcess, exec as _exec, ExecOptions } from "child_process";
 import { CommandExecError } from "./Error/CommandExecError";
 import { Template, TemplateInterpolation } from "./types";
-import {
-  TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER,
-  TEMPLATE_SYMBOL_KEY,
-} from "./constants";
+import { TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER, TEMPLATE_SYMBOL_KEY } from "./constants";
 import crypto from "crypto";
 /**
  * whether text starts with `'#!'`
@@ -63,10 +60,7 @@ export function getFirstLine(input: string) {
   return input.split("\n", 1)[0];
 }
 
-export function offsetSelection(
-  selection: vscode.Selection,
-  offsetLine: number
-) {
+export function offsetSelection(selection: vscode.Selection, offsetLine: number) {
   const newAnchor = new vscode.Position(
     selection.anchor.line + offsetLine,
     selection.anchor.character
@@ -118,11 +112,7 @@ export function evaluateTemplate(
 
   for (let index = 0; index < interpolations.length; index++) {
     const interpolation = interpolations[index];
-    if (
-      interpolation &&
-      typeof interpolation === "object" &&
-      interpolation[TEMPLATE_SYMBOL_KEY]
-    ) {
+    if (interpolation && typeof interpolation === "object" && interpolation[TEMPLATE_SYMBOL_KEY]) {
       result +=
         addMarks(
           evaluateTemplate(

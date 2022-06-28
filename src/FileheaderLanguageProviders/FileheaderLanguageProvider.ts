@@ -27,9 +27,7 @@ export abstract class FileheaderLanguageProvider {
   public static async createCustomTemplate() {
     const workspaces = vscode.workspace.workspaceFolders;
     if (!workspaces) {
-      vscode.window.showErrorMessage(
-        "Your workspace is not contain any folder"
-      );
+      vscode.window.showErrorMessage("Your workspace is not contain any folder");
       return;
     }
 
@@ -39,7 +37,7 @@ export abstract class FileheaderLanguageProvider {
       targetWorkspace = vscode.workspace.getWorkspaceFolder(activeDocumentUri);
     } else {
       const picked = await vscode.window.showQuickPick(
-        workspaces.map((workspace) => ({ label: workspace.name, workspace })),
+        workspaces.map(workspace => ({ label: workspace.name, workspace })),
         { title: "Select which workspace for add custom fileheader template" }
       );
 
@@ -58,9 +56,7 @@ export abstract class FileheaderLanguageProvider {
 
     await writeFile(templatePath, customTemplateContent);
 
-    const document = await vscode.workspace.openTextDocument(
-      path.resolve(templatePath)
-    );
+    const document = await vscode.workspace.openTextDocument(path.resolve(templatePath));
 
     vscode.window.showTextDocument(document);
   }
@@ -78,47 +74,31 @@ export abstract class FileheaderLanguageProvider {
   abstract blockCommentStart: string;
   abstract blockCommentEnd: string;
 
-  protected abstract getTemplate(
-    tpl: ITemplateFunction,
-    variables: IFileheaderVariables
-  ): Template;
+  protected abstract getTemplate(tpl: ITemplateFunction, variables: IFileheaderVariables): Template;
 
   private getTemplateInternal(variables: IFileheaderVariables) {
     return this.getTemplate(getTaggedTemplateInputs, variables);
   }
 
   public getFileheader(variables: IFileheaderVariables): string {
-    const { strings: _strings, interpolations } =
-      this.getTemplateInternal(variables);
+    const { strings: _strings, interpolations } = this.getTemplateInternal(variables);
     const strings = Array.from(_strings);
 
     return evaluateTemplate(strings, interpolations);
   }
 
   public getOriginFileheaderRegExp(eol: vscode.EndOfLine): RegExp {
-    const template = this.getTemplateInternal(
-      WILDCARD_ACCESS_VARIABLES as IFileheaderVariables
-    );
+    const template = this.getTemplateInternal(WILDCARD_ACCESS_VARIABLES as IFileheaderVariables);
 
-    const templateValue = evaluateTemplate(
-      template.strings,
-      template.interpolations,
-      true
-    );
+    const templateValue = evaluateTemplate(template.strings, template.interpolations, true);
     const pattern = templateValue
       .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 
       // user custom template may have `\r\n`, for example, read a file in Windows.
       // We should normalize it to `\n`
       .replace(/\r\n/g, "\n")
-      .replace(
-        new RegExp(`${TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER.start}`, "g"),
-        "(?:"
-      )
-      .replace(
-        new RegExp(`${TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER.end}`, "g"),
-        ")?"
-      )
+      .replace(new RegExp(`${TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER.start}`, "g"), "(?:")
+      .replace(new RegExp(`${TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER.end}`, "g"), ")?")
       .replace(
         new RegExp(
           `${TEMPLATE_NAMED_GROUP_WILDCARD_PLACEHOLDER}_(\\w+)_${TEMPLATE_NAMED_GROUP_WILDCARD_PLACEHOLDER}`,
@@ -132,10 +112,7 @@ export abstract class FileheaderLanguageProvider {
   }
 
   public getSourcefileWithoutFileheader(document: vscode.TextDocument): string {
-    const regexp = new RegExp(
-      this.getOriginFileheaderRegExp(document.eol),
-      "mg"
-    );
+    const regexp = new RegExp(this.getOriginFileheaderRegExp(document.eol), "mg");
     const source = document.getText();
     return source.replace(regexp, "");
   }
