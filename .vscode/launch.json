@@ -24,9 +24,12 @@
       "args": [
         "${workspaceFolder}/node_modules/test-workspace",
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/test/suite/index",
+        "--extensionTestsPath=${workspaceFolder}/out/integration/suite/index",
         "--disable-extensions"
       ],
+      "env": {
+        "TEST_WORKSPACE_DIR": "${workspaceFolder}/node_modules/test-workspace"
+      },
       "outFiles": [
         "${workspaceFolder}/out/**/*.js",
         "${workspaceFolder}/dist/**/*.js"

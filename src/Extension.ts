@@ -71,10 +71,10 @@ class Extension {
   private async addFileheader(...args: any[]) {
     const currentDocument = vscode.window.activeTextEditor?.document;
     if (!currentDocument) {
-      await vscode.window.showErrorMessage("You should open a file first.");
+      vscode.window.showErrorMessage("You should open a file first.");
       return;
     }
-    fileheaderManager.updateFileheader(currentDocument);
+    return fileheaderManager.updateFileheader(currentDocument);
   }
 
   createCustomTemplate() {

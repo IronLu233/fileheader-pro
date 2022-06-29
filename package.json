@@ -1,162 +1,172 @@
 {
-  "name": "fileheader-pro",
-  "displayName": "Fileheader Pro",
-  "description": "Fileheader VSCode extension with out-of-box and full customizable",
-  "version": "0.0.5",
-  "license": "MIT",
-  "preview": true,
-  "publisher": "IronLu233",
-  "icon": "assets/icon.png",
-  "repository": "https://github.com/IronLu233/fileheader-pro",
-  "author": {
-    "name": "IronLu233",
-    "email": "lrironsora@gmail.com"
-  },
-  "bugs": "https://github.com/IronLu233/fileheader-pro/issues",
-  "engines": {
-    "vscode": "^1.68.0"
-  },
-  "categories": [
-    "Formatters",
-    "Other"
-  ],
-  "keywords": [
-    "fileheader",
-    "copyright",
-    "文件头部注释",
-    "许可证",
-    "Javascript",
-    "Typescript",
-    "Python"
-  ],
-  "activationEvents": [
-    "*"
-  ],
-  "testWorkspacePath": "./node_modules/test-workspace",
-  "main": "./dist/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "fileheader-pro.fileheader",
-        "title": "Fileheader Pro: Add Fileheader"
-      },
-      {
-        "command": "fileheader-pro.generateCustomTemplate",
-        "title": "Fileheader Pro: Generate Custom Fileheader Template"
-      }
-    ],
-    "configuration": {
-      "title": "Fileheader Pro",
-      "properties": {
-        "FileheaderPro.currentUserName": {
-          "type": "string",
-          "description": "The fixed current user. The default is from your VCS"
-        },
-        "FileheaderPro.currentUserEmail": {
-          "type": "string",
-          "description": "The fixed current user email. the default is from your VCS"
-        },
-        "FileheaderPro.companyName": {
-          "type": "string",
-          "default": "YourCompanyName",
-          "description": "Your company name,"
-        },
-        "FileheaderPro.dateFormat": {
-          "type": "string",
-          "default": "YYYY-MM-DD HH:mm:ss",
-          "markdownDescription": "The date format, see [Dayjs Document](https://momentjs.com/docs/#/displaying/format)"
-        },
-        "FileheaderPro.autoInsertOnCreateFile": {
-          "type": "boolean",
-          "default": true,
-          "description": "Auto insert fileheader when create file"
-        },
-        "FileheaderPro.autoUpdateOnSave": {
-          "type": "boolean",
-          "default": true,
-          "description": "Auto update fileheader when save file"
-        },
-        "FileheaderPro.disableFields": {
-          "type": "array",
-          "default": [],
-          "items": {
-            "type": "string",
-            "enum": [
-              "birthtime",
-              "mtime",
-              "authorName",
-              "authorEmail",
-              "userName",
-              "userEmail",
-              "companyName",
-              "projectName",
-              "filePath",
-              "dirPath",
-              "fileName"
-            ]
-          },
-          "markdownEnumDescriptions": [
-            "file birth time. will get it from VCS or fallback to filesystem when it is not available",
-            "file last modified time. will get it from VCS or fallback to filesystem when it is not available",
-            "file author name. if the file is tracked by VCS, it will get the author name from VCS, else it will get it from current user name",
-            "file author email. if the file is tracked by VCS, it will get the author email from VCS, else it will get it from current user email",
-            "current user name. the default is from your git config. Can be override by #FileheaderPro.currentUserName#",
-            "current user email. the default is from your git config. Can be override by #FileheaderPro.currentUserEmail#",
-            "Company name",
-            "project name. the name of current project",
-            "the file path. relative to project root. POSIX path separator",
-            "the directory path. relative to project root. POSIX path separator",
-            "the file name including extension"
-          ],
-          "description": "Disable fields in fileheader. For default fileheader template, the contain fields are omitted"
-        }
-      }
-    }
-  },
-  "scripts": {
-    "vscode:prepublish": "yarn run package",
-    "compile": "webpack",
-    "watch": "webpack --watch",
-    "initTestWorkspace": "node scripts/initTestWorkspace.js",
-    "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/integration/runIntegration.js"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.3.1",
-    "@types/glob": "^7.2.0",
-    "@types/invariant": "^2.2.35",
-    "@types/lodash-es": "^4.17.6",
-    "@types/mocha": "^9.1.1",
-    "@types/node": "16.x",
-    "@types/vscode": "^1.68.0",
-    "@typescript-eslint/eslint-plugin": "^5.27.0",
-    "@typescript-eslint/parser": "^5.27.0",
-    "@vscode/test-electron": "^2.1.3",
-    "chai": "^4.3.6",
-    "cross-env": "^7.0.3",
-    "eslint": "^8.16.0",
-    "eslint-config-prettier": "^8.5.0",
-    "glob": "^8.0.3",
-    "mocha": "^10.0.0",
-    "prettier": "^2.7.1",
-    "rimraf": "^3.0.2",
-    "sinon": "^14.0.0",
-    "ts-loader": "^9.3.0",
-    "typescript": "^4.7.2",
-    "webpack": "^5.72.1",
-    "webpack-cli": "^4.9.2"
-  },
-  "dependencies": {
-    "dayjs": "^1.11.3",
-    "delay": "^5.0.0",
-    "eval": "^0.1.8",
-    "fs.promises.exists": "^1.1.3",
-    "invariant": "^2.2.4",
-    "lodash-es": "^4.17.21",
-    "winston": "^3.8.0"
-  }
+	"name": "fileheader-pro",
+	"displayName": "Fileheader Pro",
+	"description": "Fileheader VSCode extension with out-of-box and full customizable",
+	"version": "0.0.5",
+	"license": "MIT",
+	"preview": true,
+	"publisher": "IronLu233",
+	"icon": "assets/icon.png",
+	"repository": "https://github.com/IronLu233/fileheader-pro",
+	"author": {
+		"name": "IronLu233",
+		"email": "lrironsora@gmail.com"
+	},
+	"bugs": "https://github.com/IronLu233/fileheader-pro/issues",
+	"engines": {
+		"vscode": "^1.68.0"
+	},
+	"categories": [
+		"Formatters",
+		"Other"
+	],
+	"keywords": [
+		"fileheader",
+		"copyright",
+		"文件头部注释",
+		"许可证",
+		"Javascript",
+		"Typescript",
+		"Python"
+	],
+	"activationEvents": [
+		"*"
+	],
+	"testWorkspacePath": "./node_modules/test-workspace",
+	"main": "./dist/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "fileheader-pro.fileheader",
+				"title": "Fileheader Pro: Add Fileheader"
+			},
+			{
+				"command": "fileheader-pro.generateCustomTemplate",
+				"title": "Fileheader Pro: Generate Custom Fileheader Template"
+			}
+		],
+		"configuration": {
+			"title": "Fileheader Pro",
+			"properties": {
+				"FileheaderPro.currentUserName": {
+					"type": "string",
+					"description": "The fixed current user. The default is from your VCS"
+				},
+				"FileheaderPro.currentUserEmail": {
+					"type": "string",
+					"description": "The fixed current user email. the default is from your VCS"
+				},
+				"FileheaderPro.companyName": {
+					"type": "string",
+					"default": "YourCompanyName",
+					"description": "Your company name,"
+				},
+				"FileheaderPro.dateFormat": {
+					"type": "string",
+					"default": "YYYY-MM-DD HH:mm:ss",
+					"markdownDescription": "The date format, see [Dayjs Document](https://momentjs.com/docs/#/displaying/format)"
+				},
+				"FileheaderPro.autoInsertOnCreateFile": {
+					"type": "boolean",
+					"default": true,
+					"description": "Auto insert fileheader when create file"
+				},
+				"FileheaderPro.autoUpdateOnSave": {
+					"type": "boolean",
+					"default": true,
+					"description": "Auto update fileheader when save file"
+				},
+				"FileheaderPro.disableFields": {
+					"type": "array",
+					"default": [],
+					"items": {
+						"type": "string",
+						"enum": [
+							"birthtime",
+							"mtime",
+							"authorName",
+							"authorEmail",
+							"userName",
+							"userEmail",
+							"companyName",
+							"projectName",
+							"filePath",
+							"dirPath",
+							"fileName"
+						]
+					},
+					"markdownEnumDescriptions": [
+						"file birth time. will get it from VCS or fallback to filesystem when it is not available",
+						"file last modified time. will get it from VCS or fallback to filesystem when it is not available",
+						"file author name. if the file is tracked by VCS, it will get the author name from VCS, else it will get it from current user name",
+						"file author email. if the file is tracked by VCS, it will get the author email from VCS, else it will get it from current user email",
+						"current user name. the default is from your git config. Can be override by #FileheaderPro.currentUserName#",
+						"current user email. the default is from your git config. Can be override by #FileheaderPro.currentUserEmail#",
+						"Company name",
+						"project name. the name of current project",
+						"the file path. relative to project root. POSIX path separator",
+						"the directory path. relative to project root. POSIX path separator",
+						"the file name including extension"
+					],
+					"description": "Disable fields in fileheader. For default fileheader template, the contain fields are omitted"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "yarn run package",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"initTestWorkspace": "node scripts/initTestWorkspace.js",
+		"package": "webpack --mode production --devtool hidden-source-map",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "yarn run compile-tests && yarn run compile && yarn run lint && yarn run initTestWorkspace",
+		"lint": "eslint src --ext ts",
+		"test": "cross-env TEST_WORKSPACE_DIR=./node_modules/test-workspace node ./out/integration/runIntegration.js"
+	},
+	"devDependencies": {
+		"@types/chai": "^4.3.1",
+		"@types/glob": "^7.2.0",
+		"@types/invariant": "^2.2.35",
+		"@types/lodash-es": "^4.17.6",
+		"@types/mocha": "^9.1.1",
+		"@types/node": "16.x",
+		"@types/proxyquire": "^1.3.28",
+		"@types/rimraf": "^3.0.2",
+		"@types/sinon": "^10.0.12",
+		"@types/vscode": "^1.68.0",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0",
+		"@vscode/test-electron": "^2.1.3",
+		"chai": "^4.3.6",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.16.0",
+		"eslint-config-prettier": "^8.5.0",
+		"glob": "^8.0.3",
+		"mocha": "^10.0.0",
+		"prettier": "^2.7.1",
+		"proxyquire": "^2.1.3",
+		"rimraf": "^3.0.2",
+		"sinon": "^14.0.0",
+		"ts-loader": "^9.3.0",
+		"typescript": "^4.7.2",
+		"webpack": "^5.72.1",
+		"webpack-cli": "^4.9.2"
+	},
+	"dependencies": {
+		"dayjs": "^1.11.3",
+		"delay": "^5.0.0",
+		"eval": "^0.1.8",
+		"fs.promises.exists": "^1.1.3",
+		"invariant": "^2.2.4",
+		"lodash-es": "^4.17.21",
+		"winston": "^3.8.0"
+	},
+	"__metadata": {
+		"id": "740b13e8-551e-49f0-a617-c387e8789c2b",
+		"publisherDisplayName": "IronLu233",
+		"publisherId": "f84bf35f-be51-4f4b-a389-8408b2ae89a7",
+		"isPreReleaseVersion": false
+	}
 }

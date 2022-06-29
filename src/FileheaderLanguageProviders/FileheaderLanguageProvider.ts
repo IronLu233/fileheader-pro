@@ -20,11 +20,14 @@ import {
   WILDCARD_ACCESS_VARIABLES,
 } from "../constants";
 import { writeFile } from "fs/promises";
-import customTemplateContent from "./provider.template";
 import path from "path";
 
 export abstract class FileheaderLanguageProvider {
   public static async createCustomTemplate() {
+    const customTemplateContent = (await import(
+      "./provider.template"
+    )) as unknown as string;
+
     const workspaces = vscode.workspace.workspaceFolders;
     if (!workspaces) {
       vscode.window.showErrorMessage(
