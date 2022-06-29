@@ -1,8 +1,8 @@
 # Fileheader Pro
 
 [![.github/workflows/main.yml](https://github.com/IronLu233/fileheader-pro/actions/workflows/main.yml/badge.svg)](https://github.com/IronLu233/fileheader-pro/actions/workflows/main.yml)
-
-Fileheader VSCode extension with out-of-box and full customizable
+![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/IronLu233.fileheader-pro)
+![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/IronLu233.fileheader-pro)
 
 ## Features
 
@@ -19,9 +19,10 @@ Fileheader VSCode extension with out-of-box and full customizable
 ![AutoUpdate](https://user-images.githubusercontent.com/20639676/175778916-0a2734d2-21a3-4e93-833c-377261912652.gif)
 
 ## Preset Template Supported Languages
+
 - [x] Javascript/Typescript
 - [x] Python
-- [ ] Java **Comming soon🚀** 
+- [ ] Java **Comming soon🚀**
 - [ ] Rust **Comming soon🚀**
 - [ ] Golang **Comming soon🚀**
 
@@ -35,6 +36,7 @@ Then type `"Fileheader Pro: Add Fileheader"`
 a default file header will insert into your file.
 
 ### Disable some fields
+
 See [Extension Settings](#extension-settings) section. there is a `FileheaderPro.disableFields` property.
 
 Add your disabled fields in your VSCode setting.
