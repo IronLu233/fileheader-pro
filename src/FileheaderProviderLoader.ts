@@ -49,6 +49,7 @@ class FileheaderProviderLoader {
           {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             FileheaderLanguageProvider: FileheaderLanguageProvider,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             __dirname: resolve(folder.uri.fsPath, ".vscode"),
           },
           true

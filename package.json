@@ -123,7 +123,7 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/integration/runIntegration.js"
   },
   "devDependencies": {
     "@types/chai": "^4.3.1",
