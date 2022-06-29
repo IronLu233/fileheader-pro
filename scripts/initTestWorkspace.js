@@ -25,6 +25,6 @@ const shouldInitGit = !process.env.UNSET_GIT;
 
 fs.mkdirSync(TEST_WORKSPACE_PATH);
 console.log(path.resolve(TEST_WORKSPACE_PATH));
-// shouldInitGit && execSync('git init -q', { cwd: TEST_WORKSPACE_PATH });
-// execSync('git config user.name "Test User"', { cwd: TEST_WORKSPACE_PATH });
-// execSync('git config user.email "test@email.com', { cwd: TEST_WORKSPACE_PATH });
+shouldInitGit && execSync('git init -q', { cwd: TEST_WORKSPACE_PATH });
+execSync('git config user.name "Test User"', { cwd: TEST_WORKSPACE_PATH });
+execSync('git config user.email "test@email.com"', { cwd: TEST_WORKSPACE_PATH });

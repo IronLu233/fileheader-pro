@@ -16,6 +16,7 @@ async function main() {
     await runTests({
       extensionDevelopmentPath,
       extensionTestsPath,
+      launchArgs: ["--disable-extensions"],
       extensionTestsEnv: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         TEST_WORKSPACE_DIR: path.resolve(
