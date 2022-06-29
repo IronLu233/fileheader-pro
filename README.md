@@ -1,5 +1,7 @@
 # Fileheader Pro
 
+[![.github/workflows/main.yml](https://github.com/IronLu233/fileheader-pro/actions/workflows/main.yml/badge.svg)](https://github.com/IronLu233/fileheader-pro/actions/workflows/main.yml)
+
 Fileheader VSCode extension with out-of-box and full customizable
 
 ## Features
