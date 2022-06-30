@@ -31,7 +31,7 @@ export abstract class FileheaderLanguageProvider {
     const workspaces = vscode.workspace.workspaceFolders;
     if (!workspaces) {
       vscode.window.showErrorMessage(
-        "Your workspace is not contain any folder"
+        "Fileheader Pro: Your workspace is not contain any folder"
       );
       return;
     }

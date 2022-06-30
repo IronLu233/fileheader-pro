@@ -68,7 +68,7 @@ class FileheaderProviderLoader {
         console.error(e);
 
         vscode.window.showErrorMessage(
-          `Your custom template file has runtime error.Reason:\n${
+          `Fileheader Pro: Your custom template file has runtime error.Reason:\n${
             (e as Error).message
           }`
         );

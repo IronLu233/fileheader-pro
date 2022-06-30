@@ -101,7 +101,9 @@ class FileheaderManager {
     if (!provider) {
       !silentWhenUnsupported &&
         !allowInsert &&
-        vscode.window.showErrorMessage("This language is not supported.");
+        vscode.window.showErrorMessage(
+          "Fileheader Pro: This language is not supported."
+        );
       return;
     }
 

@@ -1,36 +1,27 @@
 import { expect } from "chai";
 import sinon from "sinon";
-import fs from "fs/promises";
 import path from "path";
 import * as vscode from "vscode";
 import rimraf from "rimraf";
+import { createAndShowDocument, closeAllEditors } from "./utils";
 import { TypescriptFileheaderProvider } from "../../FileheaderLanguageProviders/TypescriptFileheaderProvider";
 
-const showInformationMessageProxy = sinon.spy(
-  vscode.window,
-  "showInformationMessage"
-);
+const showInformationMessageProxy = sinon
+  .stub<any, any>(vscode.window, "showInformationMessage")
+  .callsFake(((...args: any[]) => {
+    (showInformationMessageProxy.wrappedMethod as any)(...args);
+    return Promise.resolve();
+  }) as any);
 
-const showErrorMessageProxy = sinon.spy(vscode.window, "showErrorMessage");
+const showErrorMessageProxy = sinon
+  .stub<any, any>(vscode.window, "showErrorMessage")
+  .callsFake(((...args: any[]) => {
+    (showErrorMessageProxy.wrappedMethod as any)(...args);
+  }) as any);
 
 const workspacePath = process.env.TEST_WORKSPACE_DIR!;
 
-async function closeAllEditors() {
-  for (let _ of vscode.workspace.textDocuments) {
-    await vscode.commands.executeCommand("workbench.action.closeActiveEditor");
-  }
-}
-
-async function createAndShowDocument(filePath: string, content = "") {
-  await fs.writeFile(filePath, content);
-  const document = await vscode.workspace.openTextDocument(filePath);
-  await vscode.window.showTextDocument(document);
-  return document;
-}
-
 describe("Preset fileheader", () => {
-  before(() => {});
-
   beforeEach(() => {
     rimraf.sync(workspacePath + "/**/*");
     showInformationMessageProxy.resetHistory();
@@ -63,7 +54,11 @@ describe("Preset fileheader", () => {
     await closeAllEditors();
     await vscode.commands.executeCommand("fileheader-pro.fileheader");
     expect(showErrorMessageProxy.calledOnce).to.be.true;
-    // TODO: assert error message content
+    expect(
+      showErrorMessageProxy.calledOnceWith(
+        "Fileheader Pro: You should open a file first."
+      )
+    ).true;
   });
 
   it("Should show error when the document language id is not supported", async () => {
@@ -73,6 +68,40 @@ describe("Preset fileheader", () => {
     await vscode.commands.executeCommand("fileheader-pro.fileheader");
     expect(document.getText()).to.be.empty;
     expect(showErrorMessageProxy.calledOnce).to.be.true;
-    // TODO: assert error message content
+    expect(
+      showErrorMessageProxy.calledOnceWith(
+        "Fileheader Pro: This language is not supported."
+      )
+    );
+  });
+
+  it("Should not modify the origin fileheader when there is already have one and doesn't have any changes", async () => {
+    const filePath = path.join(workspacePath, "shouldNotModify.ts");
+    const document = await createAndShowDocument(filePath);
+    await vscode.commands.executeCommand("fileheader-pro.fileheader");
+    const content1 = document.getText();
+    await vscode.commands.executeCommand("fileheader-pro.fileheader");
+
+    const content2 = document.getText();
+    expect(content1).eq(content2);
+  });
+
+  it("Should modify the origin fileheader when there already have one but file changes", async () => {
+    const filePath = path.join(workspacePath, "shouldModify.ts");
+    const document = await createAndShowDocument(filePath);
+    await vscode.commands.executeCommand("fileheader-pro.fileheader");
+    const content1 = document.getText();
+    const editor = await vscode.window.showTextDocument(document);
+    await editor.edit((editBuilder) => {
+      editBuilder.insert(
+        new vscode.Position(document.lineCount - 1, 0),
+        `'const 蹦蹦 = '蹦蹦'`
+      );
+    });
+
+    await document.save();
+    await vscode.commands.executeCommand("fileheader-pro.fileheader");
+    const content2 = document.getText();
+    expect(content1).to.not.equal(content2);
   });
 });

@@ -71,8 +71,9 @@ class Extension {
   private async addFileheader(...args: any[]) {
     const currentDocument = vscode.window.activeTextEditor?.document;
     if (!currentDocument) {
-      vscode.window.showErrorMessage("You should open a file first.");
-      return;
+      return vscode.window.showErrorMessage(
+        "Fileheader Pro: You should open a file first."
+      );
     }
     return fileheaderManager.updateFileheader(currentDocument);
   }
