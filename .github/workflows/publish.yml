@@ -1,10 +1,12 @@
 on:
   workflow_dispatch: {}
 
+env:
+  VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
 jobs:
   publish:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -14,5 +16,4 @@ jobs:
           node-version: 16.x
       - run: yarn install
       - run: yarn run deploy
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        
