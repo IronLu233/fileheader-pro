@@ -14,3 +14,5 @@ jobs:
           node-version: 16.x
       - run: yarn install
       - run: yarn run deploy
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
