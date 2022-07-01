@@ -71,7 +71,7 @@ Your custom file header will take effect.
 | FileheaderPro.dateFormat             | 'YYYY-MM-DD HH:mm:ss' | The date format, see https://momentjs.com/docs/#/displaying/format                            |
 | FileheaderPro.autoInsertOnCreateFile | true                  | Auto insert file header when create new file                                                  |
 | FileheaderPro.autoUpdateOnSave       | true                  | Auto update file header when save file                                                        |
-| FileheaderPro.disableFields          | []                    | Disable fields in fileheader. For default fileheader template, the contain fields are omitted |
+| FileheaderPro.disableFields          | ["mtime"]                    | Disable fields in fileheader. For default fileheader template, the contain fields are omitted. **`mtime` may take code merge conflict. Thus I disable it by default** |
 
 ## Known Issues
 

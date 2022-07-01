@@ -5,3 +5,4 @@ node_modules
 *.vsix
 submodules/vscode-extension-samples
 .vscode/symbols.json
+.nyc_output
