@@ -49,14 +49,20 @@ export class FileheaderVariableBuilder {
   public async build(
     config: vscode.WorkspaceConfiguration,
     fileUri: vscode.Uri,
-    originVariable?: IFileheaderVariables
+    originVariable?: IFileheaderVariables,
+    isCustomProvider = false
   ): Promise<IFileheaderVariables> {
     const workspace = vscode.workspace.getWorkspaceFolder(fileUri);
+
+    // disable fields should not works on custom provider.
+    // because it is meaningless
     const disableFieldSet = new Set(
-      config.get<(keyof IFileheaderVariables)[]>(
-        ConfigSection.disableFields,
-        []
-      )
+      !isCustomProvider
+        ? config.get<(keyof IFileheaderVariables)[]>(
+            ConfigSection.disableFields,
+            []
+          )
+        : []
     );
     const dateFormat = config.get(
       ConfigSection.dateFormat,
@@ -153,7 +159,7 @@ export class FileheaderVariableBuilder {
       );
       dirPath = await queryFieldsExceptDisable(
         disableFieldSet.has("dirPath"),
-        () => relative(workspace.uri.path, dirname(fileUri.path))
+        () => relative(workspace.uri.path, dirname(fileUri.path) || ".")
       );
     }
 

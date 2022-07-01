@@ -2,7 +2,7 @@
 	"name": "fileheader-pro",
 	"displayName": "Fileheader Pro",
 	"description": "Fileheader VSCode extension with out-of-box and full customizable",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"license": "MIT",
 	"preview": true,
 	"publisher": "IronLu233",
@@ -110,7 +110,7 @@
 						"the directory path. relative to project root. POSIX path separator",
 						"the file name including extension"
 					],
-					"description": "Disable fields in fileheader. For default fileheader template, the contain fields are omitted"
+					"markdownDescription": "Disable some fields in default fileheader. This properties can not affect the custom fileheader"
 				}
 			}
 		}

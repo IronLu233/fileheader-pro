@@ -122,7 +122,8 @@ class FileheaderManager {
       fileheaderVariable = await new FileheaderVariableBuilder().build(
         config,
         document.uri,
-        originFileheaderInfo.variables
+        originFileheaderInfo.variables,
+        provider.isCustomLoader
       );
     } catch (error) {
       if (error instanceof MissUserNameEmailError) {

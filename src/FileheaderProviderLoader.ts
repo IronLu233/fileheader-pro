@@ -53,15 +53,16 @@ class FileheaderProviderLoader {
             __dirname: resolve(folder.uri.fsPath, ".vscode"),
           },
           true
-        ) as (new () => FileheaderLanguageProvider)[];
+        ) as (new (
+          workspaceScopeUri: vscode.Uri
+        ) => FileheaderLanguageProvider)[];
 
         // eslint-disable-next-line @typescript-eslint/naming-convention
         templates.forEach((TemplateConstructor) => {
-          const instance = new TemplateConstructor();
+          const instance = new TemplateConstructor(folder.uri);
           if (!(instance instanceof FileheaderLanguageProvider)) {
             return;
           }
-          instance.workspaceScopeUri = folder.uri;
           providers.push(instance);
         });
       } catch (e) {

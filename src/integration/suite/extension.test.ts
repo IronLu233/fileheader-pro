@@ -3,8 +3,16 @@ import sinon from "sinon";
 import path from "path";
 import * as vscode from "vscode";
 import rimraf from "rimraf";
-import { createAndShowDocument, closeAllEditors } from "./utils";
+import {
+  createAndShowDocument,
+  closeAllEditors,
+  setDisableFields,
+  copyCustomProvider,
+} from "./utils";
 import { TypescriptFileheaderProvider } from "../../FileheaderLanguageProviders/TypescriptFileheaderProvider";
+import fs from "fs/promises";
+import { WILDCARD_ACCESS_VARIABLES } from "../../constants";
+import fsExists from "fs.promises.exists";
 
 const showInformationMessageProxy = sinon
   .stub<any, any>(vscode.window, "showInformationMessage")
@@ -22,9 +30,18 @@ const showErrorMessageProxy = sinon
 const workspacePath = process.env.TEST_WORKSPACE_DIR!;
 
 describe("Preset fileheader", () => {
-  beforeEach(() => {
-    rimraf.sync(workspacePath + "/**/*");
+  before(async () => {
+    const exists = await fsExists(workspacePath + "/.vscode");
+    if (!exists) {
+      await fs.mkdir(workspacePath + "/.vscode");
+    }
+  });
+
+  beforeEach(async () => {
+    rimraf.sync(workspacePath + "/*");
+    await closeAllEditors();
     showInformationMessageProxy.resetHistory();
+    await setDisableFields(["mtime"]);
   });
 
   it("Should fileheader plugin works when execute command", async () => {
@@ -40,7 +57,7 @@ describe("Preset fileheader", () => {
 
     const savedDocument = await onSaveDocument;
 
-    expect(document).to.equal(savedDocument);
+    expect(document.getText()).to.equal(savedDocument.getText());
 
     const provider = new TypescriptFileheaderProvider();
     expect(
@@ -95,7 +112,7 @@ describe("Preset fileheader", () => {
     await editor.edit((editBuilder) => {
       editBuilder.insert(
         new vscode.Position(document.lineCount - 1, 0),
-        `'const 蹦蹦 = '蹦蹦'`
+        `const 蹦蹦 = '蹦蹦'`
       );
     });
 
@@ -103,5 +120,69 @@ describe("Preset fileheader", () => {
     await vscode.commands.executeCommand("fileheader-pro.fileheader");
     const content2 = document.getText();
     expect(content1).to.not.equal(content2);
+  });
+
+  it("Should disabled fields works well", async () => {
+    const filePath = path.join(workspacePath, "disableFields.ts");
+    await setDisableFields(["mtime", "authorName", "authorEmail"]);
+    const document = await createAndShowDocument(filePath);
+    await vscode.commands.executeCommand("fileheader-pro.fileheader");
+
+    expect(document.getText())
+      .to.includes("@date")
+      .to.includes("Copyright © ")
+      .to.not.includes("@author")
+      .to.not.includes("@lastModified");
+  });
+});
+
+describe("Custom fileheader", () => {
+  before(async () => {
+    const exists = await fsExists(workspacePath + ".vscode");
+    if (!exists) {
+      try {
+        await fs.mkdir(workspacePath + "/.vscode");
+      } catch {}
+    }
+  });
+  beforeEach(async () => {
+    rimraf.sync(workspacePath + "/*");
+    await setDisableFields([]);
+    await closeAllEditors();
+    showInformationMessageProxy.resetHistory();
+  });
+
+  it("Should custom provider works well", async () => {
+    await setDisableFields([
+      "birthtime",
+      "mtime",
+      "authorName",
+      "authorEmail",
+      "userName",
+      "userEmail",
+      "companyName",
+      "projectName",
+      "filePath",
+      "dirPath",
+      "fileName",
+    ]);
+    const filePath = path.join(workspacePath, "customProvider.ts");
+    const customProviderPath = await copyCustomProvider(workspacePath);
+    const templateDocument = await vscode.workspace.openTextDocument(
+      customProviderPath
+    );
+    await templateDocument.save();
+
+    const document = await createAndShowDocument(filePath);
+    await vscode.commands.executeCommand(
+      "fileheader-pro.reloadCustomTemplateProvider"
+    );
+    await vscode.commands.executeCommand("fileheader-pro.fileheader");
+    const content = document.getText();
+    for (const field of Reflect.ownKeys(
+      WILDCARD_ACCESS_VARIABLES
+    ) as string[]) {
+      expect(content).to.includes(`${field}:`);
+    }
   });
 });

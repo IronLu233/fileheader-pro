@@ -7,7 +7,7 @@
  ##  ##    ##  ##     ## ##   ### ##       ##     ## ##        ##     ## ##     ## 
 #### ##     ##  #######  ##    ## ########  #######  #########  #######   #######  
 
- * @author        IronLu233 <lrironsora@gmail.com>
+ * @author         <>
  * @date          2022-06-19 11:06:08
  */
 const path = require('path');
@@ -23,7 +23,7 @@ if (fs.existsSync(TEST_WORKSPACE_PATH)) {
 
 const shouldInitGit = !process.env.UNSET_GIT;
 
-fs.mkdirSync(TEST_WORKSPACE_PATH);
+fs.mkdirSync(TEST_WORKSPACE_PATH, { recursive: true });
 console.log(path.resolve(TEST_WORKSPACE_PATH));
 shouldInitGit && execSync('git init -q', { cwd: TEST_WORKSPACE_PATH });
 execSync('git config user.name "Test User"', { cwd: TEST_WORKSPACE_PATH });

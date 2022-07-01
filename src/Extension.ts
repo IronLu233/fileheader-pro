@@ -38,6 +38,14 @@ class Extension {
       )
     );
 
+    this.disposers.push(
+      vscode.commands.registerCommand(
+        "fileheader-pro.reloadCustomTemplateProvider",
+        fileheaderManager.loadProviders,
+        fileheaderManager
+      )
+    );
+
     this.createCustomTemplateFileListener();
 
     this.disposers.push(
@@ -139,9 +147,9 @@ class Extension {
       fileheaderManager.loadProviders();
     };
 
-    this.customTemplateFileheaderWatcher.onDidCreate(reloadProviders),
-      this.customTemplateFileheaderWatcher.onDidChange(reloadProviders),
-      this.customTemplateFileheaderWatcher.onDidDelete(reloadProviders);
+    this.customTemplateFileheaderWatcher.onDidCreate(reloadProviders);
+    this.customTemplateFileheaderWatcher.onDidChange(reloadProviders);
+    this.customTemplateFileheaderWatcher.onDidDelete(reloadProviders);
   }
 }
 

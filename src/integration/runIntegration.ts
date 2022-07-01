@@ -11,20 +11,21 @@ async function main() {
     // The path to test runner
     // Passed to --extensionTestsPath
     const extensionTestsPath = path.resolve(__dirname, "./suite/index");
+    const TEST_WORKSPACE_DIR = path.resolve(
+      __dirname,
+      "..",
+      "..",
+      process.env.TEST_WORKSPACE_DIR!
+    );
 
     // Download VS Code, unzip it and run the integration test
     await runTests({
       extensionDevelopmentPath,
       extensionTestsPath,
-      launchArgs: ["--disable-extensions"],
+      launchArgs: [TEST_WORKSPACE_DIR, "--disable-extensions"],
       extensionTestsEnv: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        TEST_WORKSPACE_DIR: path.resolve(
-          __dirname,
-          "..",
-          "..",
-          process.env.TEST_WORKSPACE_DIR!
-        ),
+        TEST_WORKSPACE_DIR,
       },
     });
   } catch (err) {

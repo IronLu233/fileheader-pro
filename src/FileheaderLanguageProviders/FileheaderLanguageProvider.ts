@@ -67,16 +67,19 @@ export abstract class FileheaderLanguageProvider {
 
     vscode.window.showTextDocument(document);
   }
+  /**
+   *
+   * @param workspaceScopeUri the custom loader workspace folder uri
+   */
+  constructor(public readonly workspaceScopeUri?: vscode.Uri) {}
+
+  public get isCustomLoader() {
+    return !!this.workspaceScopeUri;
+  }
 
   abstract languages: string[];
 
   startLineOffset = 0;
-
-  /**
-   * internal field
-   * only have when it is a custom FileheaderProvider
-   */
-  workspaceScopeUri: vscode.Uri | undefined;
 
   abstract blockCommentStart: string;
   abstract blockCommentEnd: string;
