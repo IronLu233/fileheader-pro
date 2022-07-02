@@ -6,3 +6,4 @@ node_modules
 submodules/vscode-extension-samples
 .vscode/symbols.json
 .nyc_output
+tsconfig.tsbuildinfo

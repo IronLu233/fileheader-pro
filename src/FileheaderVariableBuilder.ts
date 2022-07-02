@@ -11,13 +11,18 @@
  * @date          2022-06-12 22:33:53
  */
 import vscode from "vscode";
-import { basename, dirname } from "path";
-import { relative } from "path/posix";
+import path, { basename, dirname } from "path";
+import { relative } from "path";
 import dayjs from "dayjs";
 import { IFileheaderVariables } from "./types";
 import { VCSProvider } from "./VCSProvider";
 import { stat } from "fs/promises";
-import { ConfigSection } from "./constants";
+import { ConfigSection, TEMPLATE_VARIABLE_KEYS } from "./constants";
+import { difference } from "lodash-es";
+import { FileheaderLanguageProvider } from "./FileheaderLanguageProviders";
+import upath from "upath";
+// import { sha1 } from "object-hash";
+// import { memoize } from "lodash-es";
 
 /**
  * query template variable fields when it is enabled
@@ -45,25 +50,54 @@ async function queryFieldsExceptDisable<T>(
 }
 
 export class FileheaderVariableBuilder {
+  constructor() {
+    // // memoize the function
+    // // get VCS is takes cost a lot
+    // this.build = memoize(
+    //   this.build,
+    //   (
+    //     config: vscode.WorkspaceConfiguration,
+    //     fileUri: vscode.Uri,
+    //     originVariable?: IFileheaderVariables,
+    //     isCustomProvider?: boolean
+    //   ) => {
+    //     return sha1({
+    //       disableFields: config.get(ConfigSection.disableFields),
+    //       dateFormat: config.get(ConfigSection.dateFormat),
+    //       userName: config.get(ConfigSection.userName),
+    //       userEmail: config.get(ConfigSection.userEmail),
+    //       fileUri: fileUri.toJSON(),
+    //       originVariable,
+    //       isCustomProvider,
+    //     });
+    //   }
+    // );
+  }
+
   // TODO: slow code. need optimize performance
   public async build(
     config: vscode.WorkspaceConfiguration,
     fileUri: vscode.Uri,
-    originVariable?: IFileheaderVariables,
-    isCustomProvider = false
+    provider: FileheaderLanguageProvider,
+    originVariable?: IFileheaderVariables
   ): Promise<IFileheaderVariables> {
     const workspace = vscode.workspace.getWorkspaceFolder(fileUri);
 
+    const { isCustomProvider, accessVariableFields } = provider;
     // disable fields should not works on custom provider.
     // because it is meaningless
+
     const disableFieldSet = new Set(
       !isCustomProvider
-        ? config.get<(keyof IFileheaderVariables)[]>(
-            ConfigSection.disableFields,
-            []
+        ? difference(
+            config.get<(keyof IFileheaderVariables)[]>(
+              ConfigSection.disableFields,
+              []
+            )
           )
-        : []
+        : difference(TEMPLATE_VARIABLE_KEYS, Array.from(accessVariableFields))
     );
+
     const dateFormat = config.get(
       ConfigSection.dateFormat,
       "YYYY-MM-DD HH:mm:ss"
@@ -85,7 +119,7 @@ export class FileheaderVariableBuilder {
       await VCSProvider.validate(dirname(fsPath));
     }
 
-    const companyName = await queryFieldsExceptDisable(
+    const deferredCompanyName = queryFieldsExceptDisable(
       disableFieldSet.has("companyName"),
       () => {
         return config.get<string>(ConfigSection.companyName)!;
@@ -95,35 +129,19 @@ export class FileheaderVariableBuilder {
     const fileStat = await stat(fsPath);
     const isTracked = await VCSProvider.isTracked(fsPath);
 
-    const userName = await queryFieldsExceptDisable(
+    const deferredUserName = queryFieldsExceptDisable(
       disableFieldSet.has("userName"),
       () => VCSProvider.getUserName(dirname(fsPath)),
       fixedUserName!
     );
 
-    const userEmail = await queryFieldsExceptDisable(
+    const deferredUserEmail = queryFieldsExceptDisable(
       disableFieldSet.has("userEmail"),
       () => VCSProvider.getUserEmail(dirname(fsPath)),
       fixedUserEmail!
     );
 
-    const authorName = await queryFieldsExceptDisable(
-      disableFieldSet.has("authorName"),
-      () => {
-        return isTracked ? VCSProvider.getAuthorName(fsPath) : userName;
-      },
-      userName
-    );
-
-    const authorEmail = await queryFieldsExceptDisable(
-      disableFieldSet.has("authorEmail"),
-      () => {
-        return isTracked ? VCSProvider.getAuthorEmail(fsPath) : userEmail;
-      },
-      userEmail
-    );
-
-    let birthtime = await queryFieldsExceptDisable(
+    let deferredBirthtime = queryFieldsExceptDisable(
       disableFieldSet.has("birthtime"),
       () => {
         return isTracked
@@ -132,6 +150,44 @@ export class FileheaderVariableBuilder {
       },
       dayjs(fileStat.birthtime)
     );
+    const deferredMtime = queryFieldsExceptDisable(
+      disableFieldSet.has("mtime"),
+      () => currentTime
+    );
+
+    const [companyName, userName, userEmail, _birthtime, mtime] =
+      await Promise.all([
+        deferredCompanyName,
+        deferredUserName,
+        deferredUserEmail,
+        deferredBirthtime,
+        deferredMtime,
+      ] as const);
+
+    const deferredAuthorName = queryFieldsExceptDisable(
+      disableFieldSet.has("authorName"),
+      () => {
+        return isTracked ? VCSProvider.getAuthorName(fsPath) : deferredUserName;
+      },
+      userName
+    );
+
+    const deferredAuthorEmail = queryFieldsExceptDisable(
+      disableFieldSet.has("authorEmail"),
+      () => {
+        return isTracked
+          ? VCSProvider.getAuthorEmail(fsPath)
+          : deferredUserEmail;
+      },
+      userEmail
+    );
+
+    const [authorName, authorEmail] = await Promise.all([
+      deferredAuthorName,
+      deferredAuthorEmail,
+    ] as const);
+
+    let birthtime = _birthtime;
 
     const originBirthtime = dayjs(originVariable?.birthtime, dateFormat);
 
@@ -139,28 +195,27 @@ export class FileheaderVariableBuilder {
       birthtime = originBirthtime;
     }
 
-    const mtime = await queryFieldsExceptDisable(
-      disableFieldSet.has("mtime"),
-      () => currentTime
-    );
-
     let projectName: string | undefined = undefined;
     let filePath: string | undefined = undefined;
     let dirPath: string | undefined = undefined;
     let fileName = basename(fileUri.path);
+
     if (workspace) {
-      projectName = await queryFieldsExceptDisable(
-        disableFieldSet.has("projectName"),
-        () => basename(workspace.uri.path)
-      );
-      filePath = await queryFieldsExceptDisable(
-        disableFieldSet.has("filePath"),
-        () => relative(workspace.uri.path, fileUri.path)
-      );
-      dirPath = await queryFieldsExceptDisable(
-        disableFieldSet.has("dirPath"),
-        () => relative(workspace.uri.path, dirname(fileUri.path) || ".")
-      );
+      [projectName, filePath, dirPath] = await Promise.all([
+        queryFieldsExceptDisable(disableFieldSet.has("projectName"), () =>
+          upath.normalize(basename(workspace.uri.path))
+        ),
+        queryFieldsExceptDisable(disableFieldSet.has("filePath"), () =>
+          upath.normalize(relative(workspace.uri.path, fileUri.path))
+        ),
+        await queryFieldsExceptDisable(
+          disableFieldSet.has("dirPath"),
+          () =>
+            upath.normalize(
+              relative(workspace.uri.path, dirname(fileUri.path))
+            ) || ""
+        ),
+      ] as const);
     }
 
     return {

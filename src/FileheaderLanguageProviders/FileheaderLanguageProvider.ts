@@ -71,9 +71,11 @@ export abstract class FileheaderLanguageProvider {
    *
    * @param workspaceScopeUri the custom loader workspace folder uri
    */
-  constructor(public readonly workspaceScopeUri?: vscode.Uri) {}
+  constructor(public readonly workspaceScopeUri?: vscode.Uri) {
+    this.calculateVariableAccessInfo();
+  }
 
-  public get isCustomLoader() {
+  public get isCustomProvider() {
     return !!this.workspaceScopeUri;
   }
 
@@ -144,5 +146,20 @@ export abstract class FileheaderLanguageProvider {
     );
     const source = document.getText();
     return source.replace(regexp, "");
+  }
+
+  public readonly accessVariableFields = new Set<keyof IFileheaderVariables>();
+  private calculateVariableAccessInfo() {
+    const addVariableAccess = (p: string) =>
+      this.accessVariableFields.add(p as keyof IFileheaderVariables);
+
+    const proxyVariables = new Proxy(WILDCARD_ACCESS_VARIABLES, {
+      get(target, p, receiver) {
+        addVariableAccess(p as string);
+        return Reflect.get(target, p);
+      },
+    });
+
+    this.getTemplateInternal(proxyVariables);
   }
 }

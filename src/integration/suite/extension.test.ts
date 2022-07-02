@@ -9,7 +9,10 @@ import {
   setDisableFields,
   copyCustomProvider,
 } from "./utils";
-import { TypescriptFileheaderProvider } from "../../FileheaderLanguageProviders/TypescriptFileheaderProvider";
+import {
+  FileheaderLanguageProvider,
+  internalProviders,
+} from "../../FileheaderLanguageProviders";
 import fs from "fs/promises";
 import { WILDCARD_ACCESS_VARIABLES } from "../../constants";
 import fsExists from "fs.promises.exists";
@@ -29,6 +32,11 @@ const showErrorMessageProxy = sinon
 
 const workspacePath = process.env.TEST_WORKSPACE_DIR!;
 
+const languageIdFileExtensionMap: Record<string, string> = {
+  python: "py",
+  typescript: "ts",
+};
+
 describe("Preset fileheader", () => {
   before(async () => {
     const exists = await fsExists(workspacePath + "/.vscode");
@@ -44,27 +52,80 @@ describe("Preset fileheader", () => {
     await setDisableFields(["mtime"]);
   });
 
-  it("Should fileheader plugin works when execute command", async () => {
-    const filePath = path.join(workspacePath, "shouldWork.ts");
-    const document = await createAndShowDocument(filePath);
-    const onSaveDocument = new Promise<vscode.TextDocument>((resolve) => {
-      const disposer = vscode.workspace.onDidSaveTextDocument((e) => {
-        resolve(e);
-        disposer.dispose();
+  internalProviders.forEach((provider) => {
+    const getFileName = (name: string) => {
+      return `${name}.${languageIdFileExtensionMap[provider.languages[0]]}`;
+    };
+
+    describe(`[${provider.constructor.name}]`, () => {
+      it("Should fileheader plugin works when execute command", async () => {
+        const filePath = path.join(workspacePath, getFileName("shouldWork"));
+        const document = await createAndShowDocument(filePath);
+        const onSaveDocument = new Promise<vscode.TextDocument>((resolve) => {
+          const disposer = vscode.workspace.onDidSaveTextDocument((e) => {
+            resolve(e);
+            disposer.dispose();
+          });
+        });
+        await vscode.commands.executeCommand("fileheader-pro.fileheader");
+
+        const savedDocument = await onSaveDocument;
+
+        expect(document.getText()).to.equal(savedDocument.getText());
+
+        expect(
+          provider
+            .getOriginFileheaderRegExp(savedDocument.eol)
+            .test(savedDocument.getText())
+        ).to.be.true;
+      });
+
+      it("Should not modify the origin fileheader when there is already have one and doesn't have any changes", async () => {
+        const filePath = path.join(
+          workspacePath,
+          getFileName("shouldNotModify")
+        );
+        const document = await createAndShowDocument(filePath);
+        await vscode.commands.executeCommand("fileheader-pro.fileheader");
+        const content1 = document.getText();
+        await vscode.commands.executeCommand("fileheader-pro.fileheader");
+
+        const content2 = document.getText();
+        expect(content1).eq(content2);
+      });
+
+      it("Should modify the origin fileheader when there already have one but file changes", async () => {
+        const filePath = path.join(workspacePath, getFileName("shouldModify"));
+        const document = await createAndShowDocument(filePath);
+        await vscode.commands.executeCommand("fileheader-pro.fileheader");
+        const content1 = document.getText();
+        const editor = await vscode.window.showTextDocument(document);
+        await editor.edit((editBuilder) => {
+          editBuilder.insert(
+            new vscode.Position(document.lineCount - 1, 0),
+            `const 蹦蹦 = '蹦蹦'`
+          );
+        });
+
+        await document.save();
+        await vscode.commands.executeCommand("fileheader-pro.fileheader");
+        const content2 = document.getText();
+        expect(content1).to.not.equal(content2);
+      });
+
+      it("Should disabled fields works well", async () => {
+        const filePath = path.join(workspacePath, getFileName("disableFields"));
+        await setDisableFields(["mtime", "authorName", "authorEmail"]);
+        const document = await createAndShowDocument(filePath);
+        await vscode.commands.executeCommand("fileheader-pro.fileheader");
+
+        expect(document.getText())
+          .to.includes("@date")
+          .to.includes("Copyright © ")
+          .to.not.includes("@author")
+          .to.not.includes("@lastModified");
       });
     });
-    await vscode.commands.executeCommand("fileheader-pro.fileheader");
-
-    const savedDocument = await onSaveDocument;
-
-    expect(document.getText()).to.equal(savedDocument.getText());
-
-    const provider = new TypescriptFileheaderProvider();
-    expect(
-      provider
-        .getOriginFileheaderRegExp(savedDocument.eol)
-        .test(savedDocument.getText())
-    ).to.be.true;
   });
 
   it("Should show an error toast when user don't have any active editor", async () => {
@@ -90,49 +151,6 @@ describe("Preset fileheader", () => {
         "Fileheader Pro: This language is not supported."
       )
     );
-  });
-
-  it("Should not modify the origin fileheader when there is already have one and doesn't have any changes", async () => {
-    const filePath = path.join(workspacePath, "shouldNotModify.ts");
-    const document = await createAndShowDocument(filePath);
-    await vscode.commands.executeCommand("fileheader-pro.fileheader");
-    const content1 = document.getText();
-    await vscode.commands.executeCommand("fileheader-pro.fileheader");
-
-    const content2 = document.getText();
-    expect(content1).eq(content2);
-  });
-
-  it("Should modify the origin fileheader when there already have one but file changes", async () => {
-    const filePath = path.join(workspacePath, "shouldModify.ts");
-    const document = await createAndShowDocument(filePath);
-    await vscode.commands.executeCommand("fileheader-pro.fileheader");
-    const content1 = document.getText();
-    const editor = await vscode.window.showTextDocument(document);
-    await editor.edit((editBuilder) => {
-      editBuilder.insert(
-        new vscode.Position(document.lineCount - 1, 0),
-        `const 蹦蹦 = '蹦蹦'`
-      );
-    });
-
-    await document.save();
-    await vscode.commands.executeCommand("fileheader-pro.fileheader");
-    const content2 = document.getText();
-    expect(content1).to.not.equal(content2);
-  });
-
-  it("Should disabled fields works well", async () => {
-    const filePath = path.join(workspacePath, "disableFields.ts");
-    await setDisableFields(["mtime", "authorName", "authorEmail"]);
-    const document = await createAndShowDocument(filePath);
-    await vscode.commands.executeCommand("fileheader-pro.fileheader");
-
-    expect(document.getText())
-      .to.includes("@date")
-      .to.includes("Copyright © ")
-      .to.not.includes("@author")
-      .to.not.includes("@lastModified");
   });
 });
 

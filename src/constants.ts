@@ -50,3 +50,7 @@ export const WILDCARD_ACCESS_VARIABLES: Readonly<
 export const CUSTOM_TEMPLATE_FILE_NAME = "fileheader.template.js";
 
 export const UPDATE_FILEHEADER_THRESHOLD = 10;
+
+export const TEMPLATE_VARIABLE_KEYS = Reflect.ownKeys(
+  WILDCARD_ACCESS_VARIABLES
+) as (keyof IFileheaderVariables)[];
