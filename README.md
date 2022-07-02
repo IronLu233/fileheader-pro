@@ -22,6 +22,8 @@
 
 - [x] Javascript/Typescript
 - [x] Python
+- [x] CSS, Less, SCSS
+- [x] HTML
 - [ ] Java **Comming soon🚀**
 - [ ] Rust **Comming soon🚀**
 - [ ] Golang **Comming soon🚀**

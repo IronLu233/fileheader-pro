@@ -33,7 +33,7 @@ class FileheaderManager {
     this._providers = await fileheaderProviderLoader.loadProviders();
   }
 
-  private _findProvider(document: vscode.TextDocument) {
+  private findProvider(document: vscode.TextDocument) {
     const languageId = document.languageId;
     return this._providers.find((provider) => {
       if (
@@ -96,7 +96,7 @@ class FileheaderManager {
       silentWhenUnsupported = false,
     }: UpdateFileheaderManagerOptions = {}
   ) {
-    const provider = this._findProvider(document);
+    const provider = this.findProvider(document);
 
     if (!provider) {
       !silentWhenUnsupported &&

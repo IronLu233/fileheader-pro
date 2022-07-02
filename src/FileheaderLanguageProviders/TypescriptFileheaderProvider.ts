@@ -13,7 +13,7 @@
 import { IFileheaderVariables, ITemplateFunction } from "../types";
 import { FileheaderLanguageProvider } from "./FileheaderLanguageProvider";
 export class TypescriptFileheaderProvider extends FileheaderLanguageProvider {
-  languages: string[] = [
+  readonly languages: string[] = [
     "typescript",
     "javascript",
     "javascriptreact",

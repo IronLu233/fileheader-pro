@@ -23,6 +23,7 @@
       "request": "launch",
       "args": [
         "${workspaceFolder}/node_modules/test-workspace",
+        "--install-extension Vue.volar",
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/out/integration/suite/index",
         "--disable-extensions"

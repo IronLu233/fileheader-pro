@@ -9,10 +9,7 @@ import {
   setDisableFields,
   copyCustomProvider,
 } from "./utils";
-import {
-  FileheaderLanguageProvider,
-  internalProviders,
-} from "../../FileheaderLanguageProviders";
+import { internalProviders } from "../../FileheaderLanguageProviders";
 import fs from "fs/promises";
 import { WILDCARD_ACCESS_VARIABLES } from "../../constants";
 import fsExists from "fs.promises.exists";
@@ -35,6 +32,9 @@ const workspacePath = process.env.TEST_WORKSPACE_DIR!;
 const languageIdFileExtensionMap: Record<string, string> = {
   python: "py",
   typescript: "ts",
+  vue: "vue",
+  html: "html",
+  css: "css",
 };
 
 describe("Preset fileheader", () => {
@@ -120,10 +120,10 @@ describe("Preset fileheader", () => {
         await vscode.commands.executeCommand("fileheader-pro.fileheader");
 
         expect(document.getText())
-          .to.includes("@date")
+          .to.includes("date")
           .to.includes("Copyright © ")
-          .to.not.includes("@author")
-          .to.not.includes("@lastModified");
+          .to.not.includes("author")
+          .to.not.includes("lastModified");
       });
     });
   });

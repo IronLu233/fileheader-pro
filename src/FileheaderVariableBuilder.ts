@@ -129,14 +129,15 @@ export class FileheaderVariableBuilder {
     const fileStat = await stat(fsPath);
     const isTracked = await VCSProvider.isTracked(fsPath);
 
+    // authorName and authorEmail depends on username and userEmail in VCS
     const deferredUserName = queryFieldsExceptDisable(
-      disableFieldSet.has("userName"),
+      disableFieldSet.has("userName") && disableFieldSet.has("authorName"),
       () => VCSProvider.getUserName(dirname(fsPath)),
       fixedUserName!
     );
 
     const deferredUserEmail = queryFieldsExceptDisable(
-      disableFieldSet.has("userEmail"),
+      disableFieldSet.has("userEmail") && disableFieldSet.has("authorEmail"),
       () => VCSProvider.getUserEmail(dirname(fsPath)),
       fixedUserEmail!
     );
@@ -167,7 +168,7 @@ export class FileheaderVariableBuilder {
     const deferredAuthorName = queryFieldsExceptDisable(
       disableFieldSet.has("authorName"),
       () => {
-        return isTracked ? VCSProvider.getAuthorName(fsPath) : deferredUserName;
+        return isTracked ? VCSProvider.getAuthorName(fsPath) : userName;
       },
       userName
     );
@@ -175,9 +176,7 @@ export class FileheaderVariableBuilder {
     const deferredAuthorEmail = queryFieldsExceptDisable(
       disableFieldSet.has("authorEmail"),
       () => {
-        return isTracked
-          ? VCSProvider.getAuthorEmail(fsPath)
-          : deferredUserEmail;
+        return isTracked ? VCSProvider.getAuthorEmail(fsPath) : userEmail;
       },
       userEmail
     );
@@ -223,8 +222,8 @@ export class FileheaderVariableBuilder {
       mtime: mtime?.format(dateFormat),
       authorName,
       authorEmail,
-      userName,
-      userEmail,
+      userName: !disableFieldSet.has("userName") ? userName : undefined,
+      userEmail: !disableFieldSet.has("userEmail") ? userEmail : undefined,
       companyName,
 
       projectName,

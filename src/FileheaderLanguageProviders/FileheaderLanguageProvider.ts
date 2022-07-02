@@ -79,9 +79,9 @@ export abstract class FileheaderLanguageProvider {
     return !!this.workspaceScopeUri;
   }
 
-  abstract languages: string[];
+  abstract readonly languages: string[];
 
-  startLineOffset = 0;
+  readonly startLineOffset = 0;
 
   abstract blockCommentStart: string;
   abstract blockCommentEnd: string;
