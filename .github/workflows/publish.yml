@@ -1,5 +1,15 @@
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      release_type:
+        type: choice
+        required: true
+        options:
+          - "patch"
+          - "minor"
+          - "major"
+        description: Bump version type
+
 
 env:
   VSCE_PAT: ${{ secrets.VSCE_PAT }}
@@ -15,5 +25,6 @@ jobs:
         with:
           node-version: 16.x
       - run: yarn install
+      - run: git config user.name ${{ github.actor }} && git config user.email  ${{ github.actor }}@users.noreply.github.com
+      - run: npm version ${{ inputs.release_type }} && git push --tags
       - run: yarn run deploy
-        

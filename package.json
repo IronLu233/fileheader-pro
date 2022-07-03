@@ -4,7 +4,6 @@
 	"description": "Fileheader VSCode extension with out-of-box and full customizable",
 	"version": "0.0.10",
 	"license": "MIT",
-	"preview": true,
 	"publisher": "IronLu233",
 	"icon": "assets/icon.png",
 	"repository": "https://github.com/IronLu233/fileheader-pro",
