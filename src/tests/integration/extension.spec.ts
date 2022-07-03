@@ -8,7 +8,7 @@ import {
   closeAllEditors,
   setDisableFields,
   copyCustomProvider,
-} from "./utils";
+} from "../utils";
 import { internalProviders } from "../../FileheaderLanguageProviders";
 import fs from "fs/promises";
 import { WILDCARD_ACCESS_VARIABLES } from "../../constants";

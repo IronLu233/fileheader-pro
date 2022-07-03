@@ -14,8 +14,17 @@ import glob from "glob";
 import Mocha from "mocha";
 import path from "path";
 import yargs from "yargs";
-
+import rewire from "rewire";
+import fs from "fs/promises";
 export async function run() {
+  // const templateModule = rewire(
+  //   "../../FileheaderLanguageProviders/provider.template.js"
+  // );
+  // const templateContent = await fs.readFile(
+  //   "../../FileheaderLanguageProviders/provider.template.js"
+  // );
+  // templateModule.__set__("default", templateContent);
+
   const argv = yargs(process.argv.slice(2)).argv as Record<string, string>;
   // Create the mocha test
   const mocha = new Mocha({

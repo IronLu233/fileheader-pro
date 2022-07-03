@@ -8,14 +8,15 @@
 #### ##     ##  #######  ##    ## ########  #######  #########  #######   #######  
 
  * @author        IronLu233 <lrironsora@gmail.com>
- * @date          2022-07-01 08:56:36
+ * @date          2022-06-30 22:31:52
  */
 
 // this file is for extension integration test utilities
 import vscode from "vscode";
 import fs from "fs/promises";
-import { IFileheaderVariables } from "../../types";
-import { ConfigSection, CUSTOM_TEMPLATE_FILE_NAME } from "../../constants";
+import {} from "proxyquire";
+import { IFileheaderVariables } from "../types";
+import { ConfigSection, CUSTOM_TEMPLATE_FILE_NAME } from "../constants";
 import path from "path";
 
 export async function closeAllEditors() {
@@ -33,7 +34,7 @@ export async function createAndShowDocument(filePath: string, content = "") {
 
 export async function copyCustomProvider(targetWorkspacePath: string) {
   await fs.copyFile(
-    path.join(__dirname, "customProvider.template.js"),
+    path.join(__dirname, "integration", "customProvider.template.js"),
     path.join(targetWorkspacePath, ".vscode", CUSTOM_TEMPLATE_FILE_NAME)
   );
   return path.join(targetWorkspacePath, ".vscode", CUSTOM_TEMPLATE_FILE_NAME);

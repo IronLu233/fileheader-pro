@@ -18,14 +18,34 @@
       "preLaunchTask": "${defaultBuildTask}"
     },
     {
-      "name": "Extension Tests",
+      "name": "Extension Integration Tests",
       "type": "extensionHost",
       "request": "launch",
       "args": [
         "${workspaceFolder}/node_modules/test-workspace",
         "--install-extension Vue.volar",
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/integration/suite/index",
+        "--extensionTestsPath=${workspaceFolder}/out/tests/integration/index",
+        "--disable-extensions"
+      ],
+      "env": {
+        "TEST_WORKSPACE_DIR": "${workspaceFolder}/node_modules/test-workspace"
+      },
+      "outFiles": [
+        "${workspaceFolder}/out/**/*.js",
+        "${workspaceFolder}/dist/**/*.js"
+      ],
+      "preLaunchTask": "tasks: watch-tests"
+    },
+    {
+      "name": "Extension Unit Tests",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "${workspaceFolder}/node_modules/test-workspace",
+        "--install-extension Vue.volar",
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/out/tests/unit/index",
         "--disable-extensions"
       ],
       "env": {

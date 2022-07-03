@@ -1,14 +1,17 @@
 import * as path from "path";
 import Mocha from "mocha";
 import glob from "glob";
+import yargs from "yargs";
 
 export function run(): Promise<void> {
+  const argv = yargs(process.argv.slice(2)).argv as Record<string, string>;
   // Create the mocha test
   const mocha = new Mocha({
     ui: "bdd",
     color: true,
     timeout: 20 * 1000,
     slow: 10 * 1000,
+    grep: argv.g,
   });
 
   const testsRoot = path.resolve(__dirname, "..");

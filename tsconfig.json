@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "incremental": true,
     "module": "commonjs",
     "target": "ES2020",
     "lib": ["ES2020"],
@@ -14,5 +13,6 @@
     // "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
     // "noUnusedParameters": true,  /* Report errors on unused parameters. */
   },
-  "exclude": ["node_modules", "submodules"]
+  "exclude": ["node_modules", "submodules"],
+  "include": ["src/**/*"]
 }
