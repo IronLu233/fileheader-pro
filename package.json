@@ -125,7 +125,9 @@
 		"watch-tests": "tsc -p . -w --outDir out",
 		"pretest": "yarn run compile-tests && yarn run compile && yarn run lint && yarn run initTestWorkspace",
 		"lint": "eslint src --ext ts",
-		"test": "cross-env TEST_WORKSPACE_DIR=./node_modules/test-workspace node ./out/tests/runIntegration.js && node ./out/tests/runUnit.js",
+    "test:unit": "cross-env TEST_WORKSPACE_DIR=./node_modules/test-workspace node ./out/tests/runUnit.js",
+    "test:integration": "cross-env TEST_WORKSPACE_DIR=./node_modules/test-workspace node ./out/tests/runIntegration.js",
+		"test": "yarn run test:unit && yarn run test:integration",
 		"deploy": "vsce package --allow-star-activation && vsce publish --allow-star-activation"
 	},
 	"devDependencies": {

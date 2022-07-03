@@ -15,27 +15,40 @@ import Mocha from "mocha";
 import path from "path";
 import yargs from "yargs";
 
-const argv = yargs(process.argv.slice(2)).argv as Record<string, string>;
-// Create the mocha test
-const mocha = new Mocha({
-  ui: "bdd",
-  color: true,
-  timeout: 20 * 1000,
-  slow: 10 * 1000,
-  grep: argv.g,
-});
-
-const testsRoot = path.resolve(__dirname, "..");
-
-glob.sync("**/__tests__/**.test.js", { cwd: testsRoot }).forEach((filePath) => {
-  if (!filePath.includes("integration")) {
-    mocha.addFile(path.resolve(testsRoot, filePath));
-  }
-  mocha.run((failures) => {
-    if (failures > 0) {
-      throw new Error(`${failures} tests failed.`);
-    } else {
-      return;
-    }
+export async function run() {
+  const argv = yargs(process.argv.slice(2)).argv as Record<string, string>;
+  // Create the mocha test
+  const mocha = new Mocha({
+    ui: "bdd",
+    color: true,
+    timeout: 20 * 1000,
+    slow: 10 * 1000,
+    grep: argv.g,
   });
-});
+  const testsRoot = path.resolve(__dirname, "..", "..");
+
+  return new Promise<void>((c, e) => {
+    glob("**/**.test.js", { cwd: testsRoot }, (err, files) => {
+      if (err) {
+        return e(err);
+      }
+
+      // Add files to the test suite
+      files.forEach((f) => mocha.addFile(path.resolve(testsRoot, f)));
+
+      try {
+        // Run the mocha test
+        mocha.run((failures) => {
+          if (failures > 0) {
+            e(new Error(`${failures} tests failed.`));
+          } else {
+            c();
+          }
+        });
+      } catch (err) {
+        console.error(err);
+        e(err);
+      }
+    });
+  });
+}
