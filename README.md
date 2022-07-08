@@ -4,6 +4,7 @@
 ![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/IronLu233.fileheader-pro)
 ![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/IronLu233.fileheader-pro)
 
+[中文文档](https://juejin.cn/post/7117997347837067301)
 ## Features
 
 ### Full customizable. Write your own template **with javascript logic**
