@@ -2,7 +2,7 @@
 	"name": "fileheader-pro",
 	"displayName": "Fileheader Pro",
 	"description": "Fileheader VSCode extension with out-of-box and full customizable",
-	"version": "0.0.10",
+	"version": "1.0.0",
 	"license": "MIT",
 	"publisher": "IronLu233",
 	"icon": "assets/icon.png",
