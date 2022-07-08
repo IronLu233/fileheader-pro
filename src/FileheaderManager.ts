@@ -141,7 +141,7 @@ class FileheaderManager {
 
     const shouldSkipReplace =
       originFileheaderInfo.start !== -1 &&
-      (originFileheaderInfo.content === fileheader ||
+      (originFileheaderInfo.content?.replace(/\r\n/g, "\n") === fileheader ||
         (await this.shouldSkipReplace(document)));
 
     if (shouldSkipReplace) {
