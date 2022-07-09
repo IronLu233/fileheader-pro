@@ -14,7 +14,7 @@ import { IFileheaderVariables, ITemplateFunction } from "../types";
 import { FileheaderLanguageProvider } from "./FileheaderLanguageProvider";
 
 export class HTMLFileheaderProvider extends FileheaderLanguageProvider {
-  readonly languages: string[] = ["html"];
+  readonly languages: string[] = ["html", "xml"];
 
   blockCommentStart: string = "<!--";
   blockCommentEnd: string = "-->";

@@ -24,7 +24,7 @@
 - [x] Javascript/Typescript
 - [x] Python
 - [x] CSS, Less, SCSS
-- [x] HTML
+- [x] HTML/XML
 - [x] Vue
 - [ ] Java **Comming soon🚀**
 - [ ] Rust **Comming soon🚀**

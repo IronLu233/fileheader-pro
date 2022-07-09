@@ -39,11 +39,10 @@ export class VueFileheaderProvider extends FileheaderLanguageProvider {
 
     const componentLine =
       variables.fileName &&
-      tpl`\ncomponent: ${upath.trimExt(variables.fileName)}`;
+      tpl`\ncomponent:     ${upath.trimExt(variables.fileName)}`;
     // prettier-ignore
     return tpl
-`<!--
-${authorLine}${birthtimeLine}${lastModifiedLine}${componentLine}${companyNameLine}
+`<!--${authorLine}${birthtimeLine}${lastModifiedLine}${componentLine}${companyNameLine}
 -->`;
 
     // like this:
