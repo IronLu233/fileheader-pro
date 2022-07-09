@@ -43,6 +43,10 @@ describe("Preset fileheader", () => {
     if (!exists) {
       await fs.mkdir(workspacePath + "/.vscode");
     }
+    await vscode.commands.executeCommand(
+      "workbench.extensions.installExtension",
+      "Vue.volar"
+    );
   });
 
   beforeEach(async () => {

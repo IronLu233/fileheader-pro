@@ -22,7 +22,7 @@ async function main() {
     await runTests({
       extensionDevelopmentPath,
       extensionTestsPath,
-      launchArgs: [TEST_WORKSPACE_DIR, "--install-extension Vue.volar"],
+      launchArgs: [TEST_WORKSPACE_DIR],
       extensionTestsEnv: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         TEST_WORKSPACE_DIR,
