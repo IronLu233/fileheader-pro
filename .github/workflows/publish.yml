@@ -26,5 +26,5 @@ jobs:
           node-version: 16.x
       - run: yarn install
       - run: git config user.name ${{ github.actor }} && git config user.email  ${{ github.actor }}@users.noreply.github.com
-      - run: npm version ${{ inputs.release_type }} && git push --tags
+      - run: npm version ${{ inputs.release_type }} && git push && git push --tags
       - run: yarn run deploy

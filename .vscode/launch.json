@@ -11,8 +11,7 @@
       "request": "launch",
       "args": [
         "${workspaceFolder}/submodules/vscode-extension-samples",
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--disable-extensions"
+        "--extensionDevelopmentPath=${workspaceFolder}"
       ],
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
       "preLaunchTask": "${defaultBuildTask}"
@@ -25,8 +24,7 @@
         "${workspaceFolder}/node_modules/test-workspace",
         "--install-extension Vue.volar",
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/tests/integration/index",
-        "--disable-extensions"
+        "--extensionTestsPath=${workspaceFolder}/out/tests/integration/index"
       ],
       "env": {
         "TEST_WORKSPACE_DIR": "${workspaceFolder}/node_modules/test-workspace"
@@ -45,8 +43,7 @@
         "${workspaceFolder}/node_modules/test-workspace",
         "--install-extension Vue.volar",
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/tests/unit/index",
-        "--disable-extensions"
+        "--extensionTestsPath=${workspaceFolder}/out/tests/unit/index"
       ],
       "env": {
         "TEST_WORKSPACE_DIR": "${workspaceFolder}/node_modules/test-workspace"

@@ -25,6 +25,7 @@
 - [x] Python
 - [x] CSS, Less, SCSS
 - [x] HTML
+- [x] Vue
 - [ ] Java **Comming soon🚀**
 - [ ] Rust **Comming soon🚀**
 - [ ] Golang **Comming soon🚀**

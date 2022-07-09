@@ -18,7 +18,7 @@ async function main() {
       process.env.TEST_WORKSPACE_DIR!
     );
 
-    // Download VS Code, unzip it and run the integration test
+    // Download VS Code, unzip it and run the unit test
     await runTests({
       extensionDevelopmentPath,
       extensionTestsPath,
