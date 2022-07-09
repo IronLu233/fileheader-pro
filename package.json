@@ -122,7 +122,7 @@
 		"package": "webpack --mode production --devtool hidden-source-map",
 		"compile-tests": "tsc -p . --outDir out",
 		"watch-tests": "tsc -p . -w --outDir out",
-		"pretest": "yarn run compile-tests && yarn run compile && yarn run lint && yarn run initTestWorkspace",
+		"pretest": "yarn run compile-tests && yarn run compile && yarn run lint && yarn run initTestWorkspace && code --install-extension Vue.volar --extensions-dir ./.vscode-test/extensions",
 		"lint": "eslint src --ext ts",
 		"test:unit": "cross-env TEST_WORKSPACE_DIR=./node_modules/test-workspace node ./out/tests/runUnit.js",
 		"test:integration": "cross-env TEST_WORKSPACE_DIR=./node_modules/test-workspace node ./out/tests/runIntegration.js",
