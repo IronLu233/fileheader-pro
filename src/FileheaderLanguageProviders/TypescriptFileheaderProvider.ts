@@ -1,4 +1,4 @@
-/*
+/**
 #### ########   #######  ##    ## ##       ##     ##  #######   #######   #######  
  ##  ##     ## ##     ## ###   ## ##       ##     ## ##     ## ##     ## ##     ## 
  ##  ##     ## ##     ## ####  ## ##       ##     ##        ##        ##        ## 
@@ -20,7 +20,7 @@ export class TypescriptFileheaderProvider extends FileheaderLanguageProvider {
     "typescriptreact",
   ];
 
-  blockCommentStart: string = "/*";
+  blockCommentStart: string = "/**";
   blockCommentEnd: string = "*/";
 
   override getTemplate(
@@ -47,11 +47,11 @@ export class TypescriptFileheaderProvider extends FileheaderLanguageProvider {
 
     // prettier-ignore
     return tpl
-`/*${authorLine}${birthtimeLine}${lastModifiedLine}${companyNameLine}
+`/**${authorLine}${birthtimeLine}${lastModifiedLine}${companyNameLine}
  */`;
 
     // like this:
-    /*
+    /**
      * @author        ${variables.authorName} <${variables.authorEmail}>
      * @date          ${variables.birthtime}
      * @lastModified  ${variables.mtime}

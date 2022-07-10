@@ -26,7 +26,7 @@
 - [x] CSS, Less, SCSS
 - [x] HTML/XML
 - [x] Vue
-- [ ] Java **Comming soon🚀**
+- [x] Java
 - [ ] Rust **Comming soon🚀**
 - [ ] Golang **Comming soon🚀**
 
@@ -88,10 +88,6 @@ If you find any issue, please report to [GitHub Issue](https://github.com/IronLu
 
 ## TODOS
 
-- [ ] Add support for other languages
+- [ ] Add support for other languages in [VSCode known identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers)
 - [ ] Add support for other VCS
 - [ ] Integration test and unit test
-
-## Release Notes
-
-### 0.0.1

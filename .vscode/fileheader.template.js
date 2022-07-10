@@ -61,7 +61,7 @@ class CustomLanguageProvider extends globalThis.FileheaderLanguageProvider {
   getTemplate(tpl, variables) {
     // prettier-ignore
     return tpl
-`/*
+`/**
 ${ASCIIArt}
  * @author        ${variables.authorName} <${variables.authorEmail}>
  * @date          ${variables.birthtime}

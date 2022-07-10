@@ -1,3 +1,15 @@
+/**
+#### ########   #######  ##    ## ##       ##     ##  #######   #######   #######  
+ ##  ##     ## ##     ## ###   ## ##       ##     ## ##     ## ##     ## ##     ## 
+ ##  ##     ## ##     ## ####  ## ##       ##     ##        ##        ##        ## 
+ ##  ########  ##     ## ## ## ## ##       ##     ##  #######   #######   #######  
+ ##  ##   ##   ##     ## ##  #### ##       ##     ## ##               ##        ## 
+ ##  ##    ##  ##     ## ##   ### ##       ##     ## ##        ##     ## ##     ## 
+#### ##     ##  #######  ##    ## ########  #######  #########  #######   #######  
+
+ * @author        IronLu233 <lrironsora@gmail.com>
+ * @date          2022-07-03 09:37:35
+ */
 import { expect } from "chai";
 import sinon from "sinon";
 import path from "path";
@@ -35,6 +47,7 @@ const languageIdFileExtensionMap: Record<string, string> = {
   vue: "vue",
   html: "html",
   css: "css",
+  java: "java",
 };
 
 describe("Preset fileheader", () => {
