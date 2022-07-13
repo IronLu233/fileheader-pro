@@ -107,7 +107,7 @@ class Extension {
         return;
       }
       await fileheaderManager.updateFileheader(document, {
-        silentWhenUnsupported: true,
+        silent: true,
       });
     }
   }
@@ -127,7 +127,7 @@ class Extension {
     // we only support update origin fileheader
     const updatePromise = fileheaderManager.updateFileheader(e.document, {
       allowInsert: false,
-      silentWhenUnsupported: true,
+      silent: true,
     });
     e.waitUntil(updatePromise);
   }

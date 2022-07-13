@@ -22,7 +22,7 @@ import { fileHashMemento } from "./FileHashMemento";
 import { VCSProvider } from "./VCSProvider";
 
 type UpdateFileheaderManagerOptions = {
-  silentWhenUnsupported?: boolean;
+  silent?: boolean;
   allowInsert?: boolean;
 };
 
@@ -91,15 +91,12 @@ class FileheaderManager {
 
   public async updateFileheader(
     document: vscode.TextDocument,
-    {
-      allowInsert = true,
-      silentWhenUnsupported = false,
-    }: UpdateFileheaderManagerOptions = {}
+    { allowInsert = true, silent = false }: UpdateFileheaderManagerOptions = {}
   ) {
     const provider = this.findProvider(document);
 
     if (!provider) {
-      !silentWhenUnsupported &&
+      !silent &&
         !allowInsert &&
         vscode.window.showErrorMessage(
           "Fileheader Pro: This language is not supported."
@@ -127,11 +124,11 @@ class FileheaderManager {
       );
     } catch (error) {
       if (error instanceof MissUserNameEmailError) {
-        vscode.window.showErrorMessage(error.message);
+        !silent && vscode.window.showErrorMessage(error.message);
       }
 
       if (error instanceof NoVCSProviderError) {
-        vscode.window.showErrorMessage(error.message);
+        !silent && vscode.window.showErrorMessage(error.message);
       }
       return;
     }
