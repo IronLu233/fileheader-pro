@@ -1,3 +1,0 @@
-[submodule "submodules/vscode-extension-samples"]
-	path = submodules/vscode-extension-samples
-	url = https://github.com/IronLu233/vscode-extension-samples.git
