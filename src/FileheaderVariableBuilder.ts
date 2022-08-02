@@ -13,7 +13,7 @@
 import vscode from "vscode";
 import path, { basename, dirname } from "path";
 import { relative } from "path";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { IFileheaderVariables } from "./types";
 import { VCSProvider } from "./VCSProvider";
 import { stat } from "fs/promises";
@@ -188,10 +188,16 @@ export class FileheaderVariableBuilder {
 
     let birthtime = _birthtime;
 
-    const originBirthtime = dayjs(originVariable?.birthtime, dateFormat);
-
-    if (originBirthtime.isBefore(birthtime)) {
-      birthtime = originBirthtime;
+    let originBirthtime: Dayjs | undefined = dayjs(
+      originVariable?.birthtime,
+      dateFormat
+    );
+    if (!originBirthtime.isValid()) {
+      originBirthtime = undefined;
+    } else {
+      if (originBirthtime.isBefore(birthtime)) {
+        birthtime = originBirthtime;
+      }
     }
 
     let projectName: string | undefined = undefined;
