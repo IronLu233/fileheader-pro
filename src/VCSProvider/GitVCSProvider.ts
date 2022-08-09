@@ -94,11 +94,23 @@ Set your username via 'git config user.email "your Email"'`
 
   async isTracked(filePath: string): Promise<boolean> {
     try {
-      const result = await exec(`git ls-files ${filePath}`, {
-        cwd: dirname(filePath),
-      });
-      return !!result;
-    } catch {
+      const [result, status] = await Promise.all([
+        exec(`git ls-files ${filePath}`, {
+          cwd: dirname(filePath),
+        }),
+        await exec(`git status --short ${filePath}`, {
+          cwd: dirname(filePath),
+        }),
+      ]);
+      if (!result) {
+        return false;
+      }
+      if (status[0] === "A") {
+        return false;
+      }
+
+      return true;
+    } catch (e) {
       return false;
     }
   }
