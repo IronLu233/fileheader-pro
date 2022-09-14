@@ -19,14 +19,14 @@ import {
   TEMPLATE_OPTIONAL_GROUP_PLACEHOLDER,
   WILDCARD_ACCESS_VARIABLES,
 } from "../constants";
-import { writeFile } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+import fsExists from "fs.promises.exists";
 
 export abstract class FileheaderLanguageProvider {
   public static async createCustomTemplate() {
-    const customTemplateContent = (await import(
-      "./provider.template"
-    )) as unknown as string;
+    const customTemplateContent = (await import("./provider.template"))
+      .default as unknown as string;
 
     const workspaces = vscode.workspace.workspaceFolders;
     if (!workspaces) {
@@ -53,12 +53,13 @@ export abstract class FileheaderLanguageProvider {
       return;
     }
 
-    const templatePath = path.join(
-      targetWorkspace.uri.fsPath,
-      ".vscode",
-      CUSTOM_TEMPLATE_FILE_NAME
-    );
+    const templateDir = path.join(targetWorkspace.uri.fsPath, ".vscode");
 
+    const templatePath = path.join(templateDir, CUSTOM_TEMPLATE_FILE_NAME);
+
+    if (!(await fsExists(templateDir))) {
+      await mkdir(templateDir, { recursive: true });
+    }
     await writeFile(templatePath, customTemplateContent);
 
     const document = await vscode.workspace.openTextDocument(
